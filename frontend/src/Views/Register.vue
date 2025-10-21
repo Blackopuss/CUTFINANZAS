@@ -1,9 +1,20 @@
 <template>
   <div class="auth-container">
     <div class="auth-card">
-      <h2>Iniciar Sesión</h2>
+      <h2>Crear Cuenta</h2>
 
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="handleRegister">
+        <div class="form-group">
+          <label for="username">Nombre de usuario</label>
+          <input
+            type="text"
+            id="username"
+            v-model="formData.username"
+            required
+            placeholder="usuario123"
+          />
+        </div>
+
         <div class="form-group">
           <label for="email">Email</label>
           <input
@@ -22,7 +33,18 @@
             id="password"
             v-model="formData.password"
             required
-            placeholder="••••••••"
+            placeholder="Mínimo 6 caracteres"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar Contraseña</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            v-model="formData.confirmPassword"
+            required
+            placeholder="Repite tu contraseña"
           />
         </div>
 
@@ -30,14 +52,18 @@
           {{ error }}
         </div>
 
+        <div v-if="success" class="success-message">
+          {{ success }}
+        </div>
+
         <button type="submit" :disabled="loading" class="btn-submit">
-          {{ loading ? 'Cargando...' : 'Iniciar Sesión' }}
+          {{ loading ? 'Cargando...' : 'Registrarse' }}
         </button>
       </form>
 
       <p class="switch-auth">
-        ¿No tienes cuenta?
-        <router-link to="/register">Regístrate</router-link>
+        ¿Ya tienes cuenta?
+        <router-link to="/login">Inicia Sesión</router-link>
       </p>
     </div>
   </div>
@@ -47,33 +73,53 @@
 import axios from 'axios'
 
 export default {
-  name: 'LoginVue',
+  name: 'RegisterVue',
   data() {
     return {
       formData: {
+        username: '',
         email: '',
         password: '',
+        confirmPassword: '',
       },
       loading: false,
       error: null,
+      success: null,
     }
   },
   methods: {
-    async handleLogin() {
+    async handleRegister() {
       this.error = null
+      this.success = null
+
+      // Validar que las contraseñas coincidan
+      if (this.formData.password !== this.formData.confirmPassword) {
+        this.error = 'Las contraseñas no coinciden'
+        return
+      }
+
+      if (this.formData.password.length < 6) {
+        this.error = 'La contraseña debe tener al menos 6 caracteres'
+        return
+      }
+
       this.loading = true
 
       try {
-        const response = await axios.post('http://localhost:3000/api/login', this.formData)
+        await axios.post('http://localhost:3000/api/auth/register', {
+          username: this.formData.username,
+          email: this.formData.email,
+          password: this.formData.password,
+        })
 
-        // Guardar token en localStorage
-        localStorage.setItem('token', response.data.token)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
+        this.success = 'Cuenta creada exitosamente. Redirigiendo...'
 
-        // Redirigir al dashboard
-        this.$router.push('/dashboard')
+        // Redirigir al login después de 2 segundos
+        setTimeout(() => {
+          this.$router.push('/login')
+        }, 2000)
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al iniciar sesión'
+        this.error = err.response?.data?.message || 'Error al crear la cuenta'
       } finally {
         this.loading = false
       }
@@ -157,6 +203,15 @@ input:focus {
 .error-message {
   background: #fee;
   color: #c33;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.success-message {
+  background: #efe;
+  color: #3c3;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 15px;

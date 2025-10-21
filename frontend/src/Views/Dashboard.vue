@@ -1,31 +1,36 @@
 <template>
-  <main class="dashboard" lang="es" aria-label="Panel principal del usuario">
-    <nav class="navbar" role="navigation" aria-label="Barra de navegación">
-      <h1 id="dashboard-title">Mi Dashboard</h1>
-      <button @click="handleLogout" class="btn-logout" aria-label="Cerrar sesión del usuario">
-        Cerrar Sesión
-      </button>
+  <div class="dashboard">
+    <nav class="navbar">
+      <h1>Mi Dashboard</h1>
+      <button @click="handleLogout" class="btn-logout">Cerrar Sesión</button>
     </nav>
 
-    <section class="dashboard-content" aria-labelledby="dashboard-title" role="region">
-      <div v-if="loading" class="loading" aria-busy="true">Cargando...</div>
+    <div class="dashboard-content">
+      <div v-if="loading" class="loading">Cargando...</div>
 
-      <div v-else-if="user" class="user-info" aria-label="Información del usuario">
+      <div v-else-if="user" class="user-info">
         <h2>¡Bienvenido, {{ user.username }}!</h2>
-
-        <article class="info-card" role="article">
+        <div class="info-card">
           <p><strong>ID:</strong> {{ user.id }}</p>
           <p><strong>Nombre de usuario:</strong> {{ user.username }}</p>
           <p><strong>Email:</strong> {{ user.email }}</p>
           <p><strong>Miembro desde:</strong> {{ formatDate(user.created_at) }}</p>
-        </article>
+        </div>
+
+        <div class="actions-section">
+          <h3>Acciones Rápidas</h3>
+          <div class="action-buttons">
+            <button @click="$router.push('/cards')" class="action-btn">
+              <span class="icon">💳</span>
+              <span>Mis Tarjetas</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div v-else class="error" role="alert" aria-live="assertive">
-        No se pudo cargar la información del usuario.
-      </div>
-    </section>
-  </main>
+      <div v-else class="error">No se pudo cargar la información del usuario.</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -52,7 +57,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('http://localhost:3000/api/profile', {
+        const response = await axios.get('http://localhost:3000/api/auth/profile', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -96,7 +101,7 @@ export default {
 }
 
 .navbar {
-  background: linear-gradient(135deg, #5a67d8 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px 40px;
   display: flex;
   justify-content: space-between;
@@ -105,27 +110,24 @@ export default {
 }
 
 .navbar h1 {
-  color: #fff;
+  color: white;
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 24px;
 }
 
 .btn-logout {
-  background: #fff;
-  color: #4c51bf;
+  background: white;
+  color: #667eea;
   border: none;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 5px;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    background-color 0.3s;
+  transition: transform 0.2s;
 }
 
 .btn-logout:hover {
   transform: translateY(-2px);
-  background-color: #f0f0f0;
 }
 
 .dashboard-content {
@@ -147,7 +149,7 @@ export default {
 }
 
 .info-card {
-  background: #fff;
+  background: white;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -156,20 +158,19 @@ export default {
 .info-card p {
   margin: 15px 0;
   font-size: 16px;
-  color: #444;
+  color: #555;
 }
 
 .info-card strong {
-  color: #222;
+  color: #333;
   margin-right: 10px;
 }
 
 .error {
-  background: #ffe6e6;
-  color: #b22222;
+  background: #fee;
+  color: #c33;
   padding: 20px;
   border-radius: 5px;
   text-align: center;
-  font-weight: 500;
 }
 </style>
