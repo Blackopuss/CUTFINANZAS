@@ -36,7 +36,7 @@ const router = createRouter({
   ],
 })
 
-// Guard de navegación para rutas protegidas
+
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
 
