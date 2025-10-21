@@ -5,7 +5,6 @@
 </template>
 
 <style>
-/* Puedes agregar estilos globales aquí si quieres */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;

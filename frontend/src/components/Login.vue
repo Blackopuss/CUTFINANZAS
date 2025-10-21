@@ -64,7 +64,7 @@ export default {
       this.loading = true
 
       try {
-        const response = await axios.post('http://localhost:3000/api/login', this.formData)
+        const response = await axios.post('http://localhost:3000/api/auth/login', this.formData)
 
         // Guardar token en localStorage
         localStorage.setItem('token', response.data.token)

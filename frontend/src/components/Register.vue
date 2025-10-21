@@ -106,7 +106,7 @@ export default {
       this.loading = true
 
       try {
-        await axios.post('http://localhost:3000/api/register', {
+        await axios.post('http://localhost:3000/api/auth/register', {
           username: this.formData.username,
           email: this.formData.email,
           password: this.formData.password,
