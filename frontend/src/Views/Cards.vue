@@ -13,14 +13,18 @@
     <div class="cards-content">
       <div class="header-section">
         <h2>Administración de Tarjetas</h2>
-        <button @click="showAddModal = true" class="btn-add">+ Agregar Tarjeta</button>
+        <button @click="showAddModal = true" class="btn-add">
+          + Agregar Tarjeta
+        </button>
       </div>
 
       <div v-if="loading" class="loading">Cargando tarjetas...</div>
 
       <div v-else-if="cards.length === 0" class="empty-state">
         <p>No tienes tarjetas registradas</p>
-        <button @click="showAddModal = true" class="btn-primary">Agregar tu primera tarjeta</button>
+        <button @click="showAddModal = true" class="btn-primary">
+          Agregar tu primera tarjeta
+        </button>
       </div>
 
       <div v-else class="cards-grid">
@@ -32,11 +36,19 @@
             </span>
           </div>
           <p class="bank-name">{{ card.bank_name }}</p>
+          <p class="card-balance">Saldo: ${{ parseFloat(card.balance || 0).toFixed(2) }}</p>
           <p class="card-date">Agregada: {{ formatDate(card.created_at) }}</p>
-
+          
           <div class="card-actions">
-            <button @click="openEditModal(card)" class="btn-edit">Editar</button>
-            <button @click="openDeleteModal(card)" class="btn-delete">Eliminar</button>
+            <button @click="openAddBalanceModal(card)" class="btn-balance">
+              💰 Saldo
+            </button>
+            <button @click="openEditModal(card)" class="btn-edit">
+              Editar
+            </button>
+            <button @click="openDeleteModal(card)" class="btn-delete">
+              Eliminar
+            </button>
           </div>
         </div>
       </div>
@@ -46,7 +58,7 @@
     <div v-if="showAddModal || showEditModal" class="modal-overlay" @click="closeModals">
       <div class="modal" @click.stop>
         <h3>{{ showEditModal ? 'Editar Tarjeta' : 'Agregar Tarjeta' }}</h3>
-
+        
         <form @submit.prevent="showEditModal ? updateCard() : addCard()">
           <div class="form-group">
             <label>Nombre de la tarjeta</label>
@@ -80,7 +92,9 @@
           <div v-if="error" class="error-message">{{ error }}</div>
 
           <div class="modal-actions">
-            <button type="button" @click="closeModals" class="btn-cancel">Cancelar</button>
+            <button type="button" @click="closeModals" class="btn-cancel">
+              Cancelar
+            </button>
             <button type="submit" class="btn-submit" :disabled="submitting">
               {{ submitting ? 'Guardando...' : 'Guardar' }}
             </button>
@@ -93,13 +107,9 @@
     <div v-if="showDeleteModal" class="modal-overlay" @click="closeModals">
       <div class="modal modal-small" @click.stop>
         <h3>¿Eliminar tarjeta?</h3>
-        <p>
-          ¿Estás seguro de que deseas eliminar la tarjeta
-          <strong>{{ cardToDelete?.card_name }}</strong
-          >?
-        </p>
+        <p>¿Estás seguro de que deseas eliminar la tarjeta <strong>{{ cardToDelete?.card_name }}</strong>?</p>
         <p class="warning">Esta acción no se puede deshacer.</p>
-
+        
         <div class="modal-actions">
           <button @click="closeModals" class="btn-cancel">Cancelar</button>
           <button @click="deleteCard" class="btn-delete" :disabled="submitting">
@@ -108,11 +118,45 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Agregar Saldo -->
+    <div v-if="showBalanceModal" class="modal-overlay" @click="closeModals">
+      <div class="modal modal-small" @click.stop>
+        <h3>Agregar Saldo</h3>
+        <p>Tarjeta: <strong>{{ selectedCard?.card_name }}</strong></p>
+        <p>Saldo actual: <strong>${{ parseFloat(selectedCard?.balance || 0).toFixed(2) }}</strong></p>
+        
+        <form @submit.prevent="addBalance">
+          <div class="form-group">
+            <label>Monto a agregar</label>
+            <input
+              type="number"
+              v-model="balanceAmount"
+              step="0.01"
+              min="0.01"
+              placeholder="0.00"
+              required
+            />
+          </div>
+
+          <div v-if="error" class="error-message">{{ error }}</div>
+
+          <div class="modal-actions">
+            <button type="button" @click="closeModals" class="btn-cancel">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-submit" :disabled="submitting">
+              {{ submitting ? 'Agregando...' : 'Agregar Saldo' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
   name: 'CardsVue',
@@ -123,152 +167,188 @@ export default {
       showAddModal: false,
       showEditModal: false,
       showDeleteModal: false,
+      showBalanceModal: false,
       submitting: false,
       error: null,
       formData: {
         card_name: '',
         card_type: '',
-        bank_name: '',
+        bank_name: ''
       },
       editingCardId: null,
       cardToDelete: null,
-    }
+      selectedCard: null,
+      balanceAmount: ''
+    };
   },
   async mounted() {
-    await this.loadCards()
+    await this.loadCards();
   },
   methods: {
     async loadCards() {
-      const token = localStorage.getItem('token')
-
+      const token = localStorage.getItem('token');
+      
       if (!token) {
-        this.$router.push('/login')
-        return
+        this.$router.push('/login');
+        return;
       }
 
       try {
         const response = await axios.get('http://localhost:3000/api/cards', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        this.cards = response.data
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        this.cards = response.data;
       } catch (error) {
-        console.error('Error al cargar tarjetas:', error)
+        console.error('Error al cargar tarjetas:', error);
         if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token')
-          this.$router.push('/login')
+          localStorage.removeItem('token');
+          this.$router.push('/login');
         }
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
-
+    
     async addCard() {
-      this.error = null
-      this.submitting = true
-      const token = localStorage.getItem('token')
+      this.error = null;
+      this.submitting = true;
+      const token = localStorage.getItem('token');
 
       try {
         await axios.post('http://localhost:3000/api/cards', this.formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-
-        await this.loadCards()
-        this.closeModals()
-        this.resetForm()
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        await this.loadCards();
+        this.closeModals();
+        this.resetForm();
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al agregar tarjeta'
+        this.error = err.response?.data?.message || 'Error al agregar tarjeta';
       } finally {
-        this.submitting = false
+        this.submitting = false;
       }
     },
-
+    
     openEditModal(card) {
-      this.editingCardId = card.id
+      this.editingCardId = card.id;
       this.formData = {
         card_name: card.card_name,
         card_type: card.card_type,
-        bank_name: card.bank_name,
-      }
-      this.showEditModal = true
+        bank_name: card.bank_name
+      };
+      this.showEditModal = true;
     },
-
+    
     async updateCard() {
-      this.error = null
-      this.submitting = true
-      const token = localStorage.getItem('token')
+      this.error = null;
+      this.submitting = true;
+      const token = localStorage.getItem('token');
 
       try {
-        await axios.put(`http://localhost:3000/api/cards/${this.editingCardId}`, this.formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-
-        await this.loadCards()
-        this.closeModals()
-        this.resetForm()
+        await axios.put(
+          `http://localhost:3000/api/cards/${this.editingCardId}`,
+          this.formData,
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        await this.loadCards();
+        this.closeModals();
+        this.resetForm();
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al actualizar tarjeta'
+        this.error = err.response?.data?.message || 'Error al actualizar tarjeta';
       } finally {
-        this.submitting = false
+        this.submitting = false;
       }
     },
-
+    
     openDeleteModal(card) {
-      this.cardToDelete = card
-      this.showDeleteModal = true
+      this.cardToDelete = card;
+      this.showDeleteModal = true;
     },
-
-    async deleteCard() {
-      this.submitting = true
-      const token = localStorage.getItem('token')
+    
+    openAddBalanceModal(card) {
+      this.selectedCard = card;
+      this.balanceAmount = '';
+      this.showBalanceModal = true;
+    },
+    
+    async addBalance() {
+      this.error = null;
+      this.submitting = true;
+      const token = localStorage.getItem('token');
 
       try {
-        await axios.delete(`http://localhost:3000/api/cards/${this.cardToDelete.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-
-        await this.loadCards()
-        this.closeModals()
+        await axios.post(
+          `http://localhost:3000/api/cards/${this.selectedCard.id}/add-balance`,
+          { amount: parseFloat(this.balanceAmount) },
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        await this.loadCards();
+        this.closeModals();
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al eliminar tarjeta'
+        this.error = err.response?.data?.message || 'Error al agregar saldo';
       } finally {
-        this.submitting = false
+        this.submitting = false;
       }
     },
+    
+    async deleteCard() {
+      this.submitting = true;
+      const token = localStorage.getItem('token');
 
-    closeModals() {
-      this.showAddModal = false
-      this.showEditModal = false
-      this.showDeleteModal = false
-      this.resetForm()
-      this.error = null
+      try {
+        await axios.delete(
+          `http://localhost:3000/api/cards/${this.cardToDelete.id}`,
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        await this.loadCards();
+        this.closeModals();
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al eliminar tarjeta';
+      } finally {
+        this.submitting = false;
+      }
     },
-
+    
+    closeModals() {
+      this.showAddModal = false;
+      this.showEditModal = false;
+      this.showDeleteModal = false;
+      this.showBalanceModal = false;
+      this.resetForm();
+      this.error = null;
+    },
+    
     resetForm() {
       this.formData = {
         card_name: '',
         card_type: '',
-        bank_name: '',
-      }
-      this.editingCardId = null
-      this.cardToDelete = null
+        bank_name: ''
+      };
+      this.editingCardId = null;
+      this.cardToDelete = null;
+      this.selectedCard = null;
+      this.balanceAmount = '';
     },
-
+    
     handleLogout() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      this.$router.push('/login')
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      this.$router.push('/login');
     },
-
+    
     formatDate(dateString) {
-      const date = new Date(dateString)
+      const date = new Date(dateString);
       return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric',
-      })
-    },
-  },
-}
+        day: 'numeric'
+      });
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -297,8 +377,7 @@ export default {
   gap: 10px;
 }
 
-.btn-secondary,
-.btn-logout {
+.btn-secondary, .btn-logout {
   background: white;
   color: #667eea;
   border: none;
@@ -309,8 +388,7 @@ export default {
   transition: transform 0.2s;
 }
 
-.btn-secondary:hover,
-.btn-logout:hover {
+.btn-secondary:hover, .btn-logout:hover {
   transform: translateY(-2px);
 }
 
@@ -427,20 +505,36 @@ export default {
   margin-bottom: 16px;
 }
 
-.card-actions {
-  display: flex;
-  gap: 10px;
+.card-balance {
+  color: #667eea;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 8px 0;
 }
 
-.btn-edit,
-.btn-delete {
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit, .btn-delete, .btn-balance {
   flex: 1;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border: none;
   border-radius: 5px;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s;
+  font-size: 13px;
+}
+
+.btn-balance {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.btn-balance:hover {
+  opacity: 0.8;
 }
 
 .btn-edit {
@@ -538,9 +632,7 @@ export default {
   margin-top: 20px;
 }
 
-.btn-cancel,
-.btn-submit,
-.btn-primary {
+.btn-cancel, .btn-submit, .btn-primary {
   flex: 1;
   padding: 12px;
   border: none;
@@ -554,8 +646,7 @@ export default {
   color: #666;
 }
 
-.btn-submit,
-.btn-primary {
+.btn-submit, .btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }

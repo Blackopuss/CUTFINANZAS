@@ -7,7 +7,7 @@
 
     <div class="dashboard-content">
       <div v-if="loading" class="loading">Cargando...</div>
-
+      
       <div v-else-if="user" class="user-info">
         <h2>¡Bienvenido, {{ user.username }}!</h2>
         <div class="info-card">
@@ -24,74 +24,80 @@
               <span class="icon">💳</span>
               <span>Mis Tarjetas</span>
             </button>
+            <button @click="$router.push('/transactions')" class="action-btn">
+              <span class="icon">💸</span>
+              <span>Mis Gastos</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div v-else class="error">No se pudo cargar la información del usuario.</div>
+      <div v-else class="error">
+        No se pudo cargar la información del usuario.
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
   name: 'DashboardVue',
   data() {
     return {
       user: null,
-      loading: true,
-    }
+      loading: true
+    };
   },
   async mounted() {
-    await this.loadUserProfile()
+    await this.loadUserProfile();
   },
   methods: {
     async loadUserProfile() {
-      const token = localStorage.getItem('token')
-
+      const token = localStorage.getItem('token');
+      
       if (!token) {
-        this.$router.push('/login')
-        return
+        this.$router.push('/login');
+        return;
       }
 
       try {
         const response = await axios.get('http://localhost:3000/api/auth/profile', {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        this.user = response.data
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        this.user = response.data;
       } catch (error) {
-        console.error('Error al cargar perfil:', error)
+        console.error('Error al cargar perfil:', error);
         // Si el token es inválido, redirigir al login
         if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          this.$router.push('/login')
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          this.$router.push('/login');
         }
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
     handleLogout() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      this.$router.push('/login')
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      this.$router.push('/login');
     },
     formatDate(dateString) {
-      if (!dateString) return 'N/A'
-      const date = new Date(dateString)
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
       return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric',
-      })
-    },
-  },
-}
+        day: 'numeric'
+      });
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -172,5 +178,47 @@ export default {
   padding: 20px;
   border-radius: 5px;
   text-align: center;
+}
+
+.actions-section {
+  margin-top: 30px;
+}
+
+.actions-section h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.action-btn {
+  background: white;
+  border: 2px solid #667eea;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn .icon {
+  font-size: 32px;
 }
 </style>

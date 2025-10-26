@@ -61,7 +61,6 @@ export default {
   methods: {
     async handleLogin() {
       this.error = null;
-      this.
       this.loading = true;
 
       try {
