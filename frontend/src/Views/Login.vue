@@ -2,7 +2,7 @@
   <div class="auth-container">
     <div class="auth-card">
       <h2>Iniciar Sesión</h2>
-      
+
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">Email</label>
@@ -36,7 +36,7 @@
       </form>
 
       <p class="switch-auth">
-        ¿No tienes cuenta? 
+        ¿No tienes cuenta?
         <router-link to="/register">Regístrate</router-link>
       </p>
     </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'LoginVue',
@@ -52,11 +52,11 @@ export default {
     return {
       formData: {
         email: '',
-        password: ''
+        password: '',
       },
       loading: false,
-      error: null
-    };
+      error: null,
+    }
   },
   methods: {
     async handleLogin() {
@@ -64,22 +64,22 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.post('http://localhost:3000/api/auth/login', this.formData);
-        
+        const response = await axios.post('http://localhost:3000/api/auth/login', this.formData)
+
         // Guardar token en localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+
         // Redirigir al dashboard
-        this.$router.push('/dashboard');
+        this.$router.push('/dashboard')
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al iniciar sesión';
+        this.error = err.response?.data?.message || 'Error al iniciar sesión'
       } finally {
-        this.loading = false;
+        this.loading = false
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style scoped>
@@ -88,14 +88,15 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffffed 0%, #f5f5dc 100%);
   padding: 20px;
 }
 
 .auth-card {
-  background: white;
+  background: #f2f2d8;
   padding: 40px;
   border-radius: 10px;
+  border: 0.1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 400px;
@@ -119,7 +120,7 @@ label {
 }
 
 input {
-  width: 100%;
+  width: 95%;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -130,17 +131,18 @@ input {
 input:focus {
   outline: none;
   border-color: #667eea;
+  font-weight: bold;
 }
 
 .btn-submit {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #030626;
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -170,12 +172,13 @@ input:focus {
 }
 
 .switch-auth a {
-  color: #667eea;
+  color: #030626;
   text-decoration: none;
   font-weight: 600;
 }
 
 .switch-auth a:hover {
   text-decoration: underline;
+  color: #363980;
 }
 </style>
