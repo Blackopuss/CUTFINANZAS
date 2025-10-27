@@ -7,7 +7,7 @@
 
     <div class="dashboard-content">
       <div v-if="loading" class="loading">Cargando...</div>
-      
+
       <div v-else-if="user" class="user-info">
         <h2>¡Bienvenido, {{ user.username }}!</h2>
         <div class="info-card">
@@ -56,7 +56,7 @@ export default {
   methods: {
     async loadUserProfile() {
       const token = localStorage.getItem('token');
-      
+
       if (!token) {
         this.$router.push('/login');
         return;
@@ -68,7 +68,7 @@ export default {
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         this.user = response.data;
       } catch (error) {
         console.error('Error al cargar perfil:', error);
@@ -103,7 +103,7 @@ export default {
 <style scoped>
 .dashboard {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #ffffed 0%, #f5f5dc 100%); background: #f5f5f5;
 }
 
 .navbar {
@@ -122,8 +122,9 @@ export default {
 }
 
 .btn-logout {
-  background: white;
-  color: #667eea;
+  font-weight: bold;
+  background: #030626;
+  color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -182,6 +183,7 @@ export default {
 
 .actions-section {
   margin-top: 30px;
+
 }
 
 .actions-section h3 {
@@ -196,8 +198,10 @@ export default {
 }
 
 .action-btn {
-  background: white;
-  border: 2px solid #667eea;
+  background:  #FFF7D6;
+
+  box-shadow:0px 4px 8px   rgba(0,0 ,0, 0.2);
+  border: 0.2px solid rgba(0,0,0,0.1);
   padding: 20px;
   border-radius: 10px;
   display: flex;
@@ -208,11 +212,12 @@ export default {
   transition: all 0.3s;
   font-size: 16px;
   font-weight: 600;
-  color: #667eea;
+  color: #030626;
+
 }
 
 .action-btn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #030626 0%, #01013D 100%);
   color: white;
   transform: translateY(-5px);
   box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
