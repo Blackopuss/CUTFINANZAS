@@ -1,11 +1,13 @@
 <template>
   <div class="dashboard">
-    <nav class="navbar">
+    <SideBarComponent />
+    <!-- <nav class="navbar">
       <h1>Mi Dashboard</h1>
       <button @click="handleLogout" class="btn-logout">Cerrar Sesión</button>
-    </nav>
+    </nav> -->
 
     <div class="dashboard-content">
+      <NavBar />
       <div v-if="loading" class="loading">Cargando...</div>
 
       <div v-else-if="user" class="user-info">
@@ -32,93 +34,89 @@
         </div>
       </div>
 
-      <div v-else class="error">
-        No se pudo cargar la información del usuario.
-      </div>
+      <div v-else class="error">No se pudo cargar la información del usuario.</div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import NavBar from '@/components/NavbarComponent.vue'
+import SideBarComponent from '../components/SideBarComponent.vue'
+import axios from 'axios'
 
 export default {
   name: 'DashboardVue',
+  components: {
+    SideBarComponent,
+    NavBar,
+  },
   data() {
     return {
       user: null,
-      loading: true
-    };
+      loading: true,
+    }
   },
   async mounted() {
-    await this.loadUserProfile();
+    await this.loadUserProfile()
   },
   methods: {
     async loadUserProfile() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token')
 
       if (!token) {
-        this.$router.push('/login');
-        return;
+        this.$router.push('/login')
+        return
       }
 
       try {
         const response = await axios.get('http://localhost:3000/api/auth/profile', {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+            Authorization: `Bearer ${token}`,
+          },
+        })
 
-        this.user = response.data;
+        this.user = response.data
       } catch (error) {
-        console.error('Error al cargar perfil:', error);
+        console.error('Error al cargar perfil:', error)
         // Si el token es inválido, redirigir al login
         if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          this.$router.push('/login');
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          this.$router.push('/login')
         }
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
     handleLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      this.$router.push('/login');
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.$router.push('/login')
     },
     formatDate(dateString) {
-      if (!dateString) return 'N/A';
-      const date = new Date(dateString);
+      if (!dateString) return 'N/A'
+      const date = new Date(dateString)
       return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
-      });
-    }
-  }
-};
+        day: 'numeric',
+      })
+    },
+  },
+}
 </script>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+}
 .dashboard {
+  padding: 10px 5px 0 10px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffed 0%, #f5f5dc 100%); background: #f5f5f5;
-}
-
-.navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 40px;
+  background: #f2f1e9;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar h1 {
-  color: white;
-  margin: 0;
-  font-size: 24px;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 .btn-logout {
@@ -138,9 +136,16 @@ export default {
 }
 
 .dashboard-content {
+  border: 0.2px solid rgba(0, 0, 0, 0.1);
+  height: auto;
+  min-height: 90vh;
   padding: 40px;
-  max-width: 800px;
-  margin: 0 auto;
+  border-radius: 16px;
+  width: 90vw;
+  max-width: 90vw;
+  margin: 20px 0 25px;
+  background-color: #e1dfcc;
+  box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.3);
 }
 
 .loading {
@@ -183,7 +188,6 @@ export default {
 
 .actions-section {
   margin-top: 30px;
-
 }
 
 .actions-section h3 {
@@ -198,10 +202,10 @@ export default {
 }
 
 .action-btn {
-  background:  #FFF7D6;
+  background: #f2f1e9;
 
-  box-shadow:0px 4px 8px   rgba(0,0 ,0, 0.2);
-  border: 0.2px solid rgba(0,0,0,0.1);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  border: 0.2px solid rgba(0, 0, 0, 0.1);
   padding: 20px;
   border-radius: 10px;
   display: flex;
@@ -213,11 +217,10 @@ export default {
   font-size: 16px;
   font-weight: 600;
   color: #030626;
-
 }
 
 .action-btn:hover {
-  background: linear-gradient(135deg, #030626 0%, #01013D 100%);
+  background: linear-gradient(135deg, #030626 0%, #01013d 100%);
   color: white;
   transform: translateY(-5px);
   box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);

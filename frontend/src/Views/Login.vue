@@ -60,8 +60,8 @@ export default {
   },
   methods: {
     async handleLogin() {
-      this.error = null;
-      this.loading = true;
+      this.error = null
+      this.loading = true
 
       try {
         const response = await axios.post('http://localhost:3000/api/auth/login', this.formData)
@@ -137,7 +137,7 @@ input:focus {
 .btn-submit {
   width: 100%;
   padding: 12px;
-  background: #030626;
+  background: var(--color-btn);
   color: white;
   border: none;
   border-radius: 5px;
