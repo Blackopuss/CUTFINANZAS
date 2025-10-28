@@ -13,19 +13,12 @@ app.use(bodyParser.json());
 
 // Conexión a MySQL
 const db = mysql.createConnection({
-<<<<<<< HEAD
   host: "localhost",
   //cambien poor su contrasena y usuario, cambie al mio. Comente la que sta en las emnv
   user: "root",
   password: "0206",
   // password: process.env.DB_PASSWORD ,
   database: "finanzas",
-=======
-	host: "localhost",
-	user: "admin",
-	password: process.env.DB_PASSWORD,
-	database: "finanzas",
->>>>>>> 9a128aa7ebe3f6c1375bf1062f3eb7536dc93701
 });
 
 db.connect((err) => {
