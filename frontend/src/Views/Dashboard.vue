@@ -123,7 +123,7 @@ export default {
 .dashboard {
   padding: 10px 5px 0 10px;
   min-height: 100vh;
-  background: #f2f1e9;
+  background: var(--color-fondo);
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -144,7 +144,6 @@ export default {
   transform: translateY(-2px);
 }
 
-/* ===== Contenido ===== */
 .dashboard-content {
   border: 0.2px solid rgba(0, 0, 0, 0.1);
   height: auto;
@@ -154,7 +153,7 @@ export default {
   width: 90vw;
   max-width: 90vw;
   margin: 20px 0 25px;
-  background-color: #e1dfcc;
+  background-color: var(--color-comp);
   box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -207,7 +206,7 @@ export default {
 }
 
 .action-btn {
-  background: #f2f1e9;
+  background: var(--color-fondo);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border: 0.2px solid rgba(0, 0, 0, 0.1);
   padding: 20px;

@@ -113,12 +113,12 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffed 0%, #f5f5dc 100%);
+  background: var(--color-fondo);
   padding: 20px;
 }
 
 .auth-card {
-  background: #f2f2d8;
+  background: var(--color-comp);
   padding: 40px;
   border-radius: 10px;
   border: 0.1px solid rgba(0, 0, 0, 0.1);
@@ -172,7 +172,9 @@ input:focus {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s, opacity 0.3s;
+  transition:
+    transform 0.2s,
+    opacity 0.3s;
 }
 
 .btn-submit:hover:not(:disabled) {
