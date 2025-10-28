@@ -14,10 +14,9 @@ app.use(bodyParser.json());
 // Conexión a MySQL
 const db = mysql.createConnection({
 	host: "localhost",
-	user: "eduardo",
-  password: "0206", 
-	// password: process.env.DB_PASSWORD ,
-	database: "finanzas"
+	user: "admin",
+	password: process.env.DB_PASSWORD,
+	database: "finanzas",
 });
 
 db.connect((err) => {
