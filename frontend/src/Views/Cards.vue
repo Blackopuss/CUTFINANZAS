@@ -28,7 +28,7 @@
           <p class="card-date">Agregada: {{ formatDate(card.created_at) }}</p>
 
           <div class="card-actions">
-            <button @click="openAddBalanceModal(card)" class="btn-balance">💰 Saldo</button>
+            <button @click="openAddBalanceModal(card)" class="btn-balance">Saldo</button>
             <button @click="openEditModal(card)" class="btn-edit">Editar</button>
             <button @click="openDeleteModal(card)" class="btn-delete">Eliminar</button>
           </div>
@@ -445,7 +445,7 @@ export default {
 }
 
 .card-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -470,13 +470,16 @@ export default {
 }
 
 .card-type.débito {
-  background: #e3f2fd;
-  color: #1976d2;
+  background: var(--color-1000);
+  color: #ffffff;
+  font-weight: bold;
+  border-radius: 10px;
 }
 
 .card-type.crédito {
-  background: #f3e5f5;
-  color: #7b1fa2;
+  background: var(--color-1000);
+  color: #ffffff;
+  font-weight: bold;
 }
 
 .bank-name {
@@ -486,13 +489,13 @@ export default {
 }
 
 .card-date {
-  color: #999;
+  color: var(--color-1000);
   font-size: 13px;
   margin-bottom: 16px;
 }
 
 .card-balance {
-  color: #667eea;
+  color: var(--color-btn);
   font-size: 18px;
   font-weight: 700;
   margin: 8px 0;
@@ -514,29 +517,19 @@ export default {
   cursor: pointer;
   transition: opacity 0.2s;
   font-size: 13px;
+  background-color: var(--color-btn);
+  color: #ffffff;
 }
 
 .btn-balance {
-  background: #e8f5e9;
-  color: #2e7d32;
 }
 
 .btn-balance:hover {
   opacity: 0.8;
 }
 
-.btn-edit {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
 .btn-edit:hover {
   opacity: 0.8;
-}
-
-.btn-delete {
-  background: #ffebee;
-  color: #c62828;
 }
 
 .btn-delete:hover {

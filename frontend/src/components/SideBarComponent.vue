@@ -4,7 +4,7 @@
 
 <template>
   <section>
-    <span><img src="" alt="" />Img de la empre</span>
+    <span><img src="../../assets/logo.jpg" alt="" /></span>
     <div class="container-elements">
       <span>
         <router-link to="/" class="router-link">
@@ -54,5 +54,11 @@ section {
 }
 .router-link:hover {
   background-color: #dbd8ce;
+}
+img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 85px;
 }
 </style>

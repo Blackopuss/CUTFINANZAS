@@ -62,13 +62,16 @@ onMounted(() => {
 
 <style scoped>
 section {
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 40px 0;
-
+  background-color: transparent;
   width: 100%;
   height: 8vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .container-actions {
   box-shadow: 2px 2px 10px -2px rgba(0, 0, 0, 0.3);
@@ -129,14 +132,13 @@ button::before {
   transition: opacity 0.3s ease;
 }
 
-/* Hover */
 button:hover {
   background-color: #151563;
 
-  transform: translateY(-3px); /* movimiento hacia arriba */
+  transform: translateY(-3px);
 }
 
 button:hover::before {
-  opacity: 1; /* aparece el brillo */
+  opacity: 1;
 }
 </style>

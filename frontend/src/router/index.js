@@ -4,6 +4,7 @@ import Register from '../Views/Register.vue'
 import Dashboard from '../Views/Dashboard.vue'
 import Cards from '../Views/Cards.vue'
 import Transactions from '../Views/Transactions.vue'
+import Perfil from '../Views/PerfilView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,12 @@ const router = createRouter({
       path: '/transactions',
       name: 'transactions',
       component: Transactions,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/perfil',
+      name: 'Perfil',
+      component: Perfil,
       meta: { requiresAuth: true },
     },
   ],
