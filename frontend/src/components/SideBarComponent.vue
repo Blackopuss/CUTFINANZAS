@@ -17,7 +17,7 @@
         ></span
       >
       <span>
-        <router-link to="" class="router-link">
+        <router-link to="/transactions" class="router-link">
           <i class="fa-solid fa-wallet"></i>Mis gastos</router-link
         >
       </span>
