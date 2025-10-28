@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+//agregeue est comentario para hacer un commit
+</script>
 
 <template>
   <section>
