@@ -342,9 +342,10 @@ export default {
 
 <style scoped>
 .cards-page {
+  background-color: var(--color-fondo);
   padding: 10px 5px 0 10px;
   min-height: 100vh;
-  background: #f2f1e9;
+
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -379,7 +380,7 @@ export default {
   width: 90vw;
   max-width: 90vw;
   margin: 20px 0 25px;
-  background-color: #e1dfcc;
+  background-color: var(--color-comp);
   box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.3);
 }
 

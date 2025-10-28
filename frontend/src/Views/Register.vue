@@ -134,12 +134,12 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffed 0%, #f5f5dc 100%);
+  background: var(--color-fondo);
   padding: 20px;
 }
 
 .auth-card {
-    background: #f2f2d8;
+  background: var(--color-comp);
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -181,7 +181,7 @@ input:focus {
 .btn-submit {
   width: 100%;
   padding: 12px;
-    background: #030626;
+  background: #030626;
   color: white;
   border: none;
   border-radius: 5px;

@@ -1,6 +1,7 @@
 <template>
   <div class="transactions-page">
-    <nav class="navbar">
+    <SideBarComponent />
+    <!-- <nav class="navbar">
       <h1>Historial de Gastos</h1>
       <div class="nav-buttons">
         <button @click="$router.push('/dashboard')" class="btn-secondary">
@@ -8,10 +9,11 @@
         </button>
         <button @click="handleLogout" class="btn-logout">Cerrar Sesión</button>
       </div>
-    </nav>
+    </nav> -->
 
     <div class="transactions-content">
       <!-- Resumen Total -->
+      <NavbarComponent />
       <div class="summary-section">
         <div class="summary-card total-balance">
           <h3>💰 Saldo Total</h3>
@@ -26,9 +28,7 @@
       <!-- Header con botones -->
       <div class="header-section">
         <h2>Mis Gastos</h2>
-        <button @click="showAddModal = true" class="btn-add">
-          + Registrar Gasto
-        </button>
+        <button @click="showAddModal = true" class="btn-add">+ Registrar Gasto</button>
       </div>
 
       <!-- Filtros -->
@@ -53,9 +53,7 @@
           <input type="date" v-model="filters.end_date" @change="applyFilters" />
         </div>
 
-        <button @click="clearFilters" class="btn-clear-filters">
-          Limpiar Filtros
-        </button>
+        <button @click="clearFilters" class="btn-clear-filters">Limpiar Filtros</button>
       </div>
 
       <!-- Lista de Transacciones -->
@@ -63,9 +61,7 @@
 
       <div v-else-if="transactions.length === 0" class="empty-state">
         <p>No hay gastos registrados</p>
-        <button @click="showAddModal = true" class="btn-primary">
-          Registrar tu primer gasto
-        </button>
+        <button @click="showAddModal = true" class="btn-primary">Registrar tu primer gasto</button>
       </div>
 
       <div v-else class="transactions-list">
@@ -73,7 +69,7 @@
           <div class="transaction-icon" :style="{ backgroundColor: transaction.color + '20' }">
             <span>{{ transaction.icon || '📌' }}</span>
           </div>
-          
+
           <div class="transaction-info">
             <h4>{{ transaction.category }}</h4>
             <p class="description">{{ transaction.description || 'Sin descripción' }}</p>
@@ -88,9 +84,7 @@
           </div>
 
           <div class="transaction-actions">
-            <button @click="openEditModal(transaction)" class="btn-icon" title="Editar">
-              ✏️
-            </button>
+            <button @click="openEditModal(transaction)" class="btn-icon" title="Editar">✏️</button>
             <button @click="openDeleteModal(transaction)" class="btn-icon" title="Eliminar">
               🗑️
             </button>
@@ -103,7 +97,7 @@
     <div v-if="showAddModal || showEditModal" class="modal-overlay" @click="closeModals">
       <div class="modal" @click.stop>
         <h3>{{ showEditModal ? 'Editar Gasto' : 'Registrar Gasto' }}</h3>
-        
+
         <form @submit.prevent="showEditModal ? updateTransaction() : addTransaction()">
           <div class="form-group">
             <label>Monto *</label>
@@ -148,19 +142,13 @@
 
           <div class="form-group">
             <label>Fecha *</label>
-            <input
-              type="date"
-              v-model="formData.transaction_date"
-              required
-            />
+            <input type="date" v-model="formData.transaction_date" required />
           </div>
 
           <div v-if="error" class="error-message">{{ error }}</div>
 
           <div class="modal-actions">
-            <button type="button" @click="closeModals" class="btn-cancel">
-              Cancelar
-            </button>
+            <button type="button" @click="closeModals" class="btn-cancel">Cancelar</button>
             <button type="submit" class="btn-submit" :disabled="submitting">
               {{ submitting ? 'Guardando...' : 'Guardar' }}
             </button>
@@ -176,10 +164,12 @@
         <p>¿Estás seguro de que deseas eliminar este gasto?</p>
         <div class="delete-info">
           <p><strong>Categoría:</strong> {{ transactionToDelete?.category }}</p>
-          <p><strong>Monto:</strong> ${{ parseFloat(transactionToDelete?.amount || 0).toFixed(2) }}</p>
+          <p>
+            <strong>Monto:</strong> ${{ parseFloat(transactionToDelete?.amount || 0).toFixed(2) }}
+          </p>
         </div>
         <p class="warning">Esta acción no se puede deshacer.</p>
-        
+
         <div class="modal-actions">
           <button @click="closeModals" class="btn-cancel">Cancelar</button>
           <button @click="deleteTransaction" class="btn-delete" :disabled="submitting">
@@ -192,10 +182,16 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import NavbarComponent from '@/components/NavbarComponent.vue'
+import SideBarComponent from '@/components/SideBarComponent.vue'
 
 export default {
   name: 'TransactionsVue',
+  components: {
+    SideBarComponent,
+    NavbarComponent,
+  },
   data() {
     return {
       transactions: [],
@@ -214,19 +210,19 @@ export default {
         amount: '',
         category: '',
         description: '',
-        transaction_date: this.getTodayDate()
+        transaction_date: this.getTodayDate(),
       },
       filters: {
         category: '',
         start_date: '',
-        end_date: ''
+        end_date: '',
       },
       editingTransactionId: null,
-      transactionToDelete: null
-    };
+      transactionToDelete: null,
+    }
   },
   async mounted() {
-    await this.loadData();
+    await this.loadData()
   },
   methods: {
     async loadData() {
@@ -234,130 +230,130 @@ export default {
         this.loadTransactions(),
         this.loadCards(),
         this.loadCategories(),
-        this.loadTotalBalance()
-      ]);
-      this.calculateTotalExpenses();
+        this.loadTotalBalance(),
+      ])
+      this.calculateTotalExpenses()
     },
 
     async loadTransactions() {
-      const token = localStorage.getItem('token');
-      
+      const token = localStorage.getItem('token')
+
       if (!token) {
-        this.$router.push('/login');
-        return;
+        this.$router.push('/login')
+        return
       }
 
       try {
-        const params = new URLSearchParams();
-        if (this.filters.category) params.append('category', this.filters.category);
-        if (this.filters.start_date) params.append('start_date', this.filters.start_date);
-        if (this.filters.end_date) params.append('end_date', this.filters.end_date);
+        const params = new URLSearchParams()
+        if (this.filters.category) params.append('category', this.filters.category)
+        if (this.filters.start_date) params.append('start_date', this.filters.start_date)
+        if (this.filters.end_date) params.append('end_date', this.filters.end_date)
 
         const response = await axios.get(`http://localhost:3000/api/transactions?${params}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        this.transactions = response.data;
-        this.calculateTotalExpenses();
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        this.transactions = response.data
+        this.calculateTotalExpenses()
       } catch (error) {
-        console.error('Error al cargar transacciones:', error);
+        console.error('Error al cargar transacciones:', error)
         if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token');
-          this.$router.push('/login');
+          localStorage.removeItem('token')
+          this.$router.push('/login')
         }
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
     async loadCards() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token')
       try {
         const response = await axios.get('http://localhost:3000/api/cards', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        this.cards = response.data;
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        this.cards = response.data
       } catch (error) {
-        console.error('Error al cargar tarjetas:', error);
+        console.error('Error al cargar tarjetas:', error)
       }
     },
 
     async loadCategories() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token')
       try {
         const response = await axios.get('http://localhost:3000/api/categories', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        this.categories = response.data;
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        this.categories = response.data
       } catch (error) {
-        console.error('Error al cargar categorías:', error);
+        console.error('Error al cargar categorías:', error)
       }
     },
 
     async loadTotalBalance() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token')
       try {
         const response = await axios.get('http://localhost:3000/api/total-balance', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        this.totalBalance = response.data.total;
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        this.totalBalance = response.data.total
       } catch (error) {
-        console.error('Error al cargar balance total:', error);
+        console.error('Error al cargar balance total:', error)
       }
     },
 
     calculateTotalExpenses() {
-      const total = this.transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
-      this.totalExpenses = total.toFixed(2);
+      const total = this.transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0)
+      this.totalExpenses = total.toFixed(2)
     },
 
     async addTransaction() {
-      this.error = null;
-      this.submitting = true;
-      const token = localStorage.getItem('token');
+      this.error = null
+      this.submitting = true
+      const token = localStorage.getItem('token')
 
       try {
         const data = {
           amount: parseFloat(this.formData.amount),
           category: this.formData.category,
           description: this.formData.description,
-          transaction_date: this.formData.transaction_date
-        };
+          transaction_date: this.formData.transaction_date,
+        }
 
         if (this.formData.card_id) {
-          data.card_id = parseInt(this.formData.card_id);
+          data.card_id = parseInt(this.formData.card_id)
         }
 
         await axios.post('http://localhost:3000/api/transactions', data, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        await this.loadData();
-        this.closeModals();
-        this.resetForm();
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        await this.loadData()
+        this.closeModals()
+        this.resetForm()
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al registrar gasto';
+        this.error = err.response?.data?.message || 'Error al registrar gasto'
       } finally {
-        this.submitting = false;
+        this.submitting = false
       }
     },
 
     openEditModal(transaction) {
-      this.editingTransactionId = transaction.id;
+      this.editingTransactionId = transaction.id
       this.formData = {
         card_id: transaction.card_id || '',
         amount: transaction.amount,
         category: transaction.category,
         description: transaction.description || '',
-        transaction_date: transaction.transaction_date
-      };
-      this.showEditModal = true;
+        transaction_date: transaction.transaction_date,
+      }
+      this.showEditModal = true
     },
 
     async updateTransaction() {
-      this.error = null;
-      this.submitting = true;
-      const token = localStorage.getItem('token');
+      this.error = null
+      this.submitting = true
+      const token = localStorage.getItem('token')
 
       try {
         await axios.put(
@@ -366,65 +362,65 @@ export default {
             amount: parseFloat(this.formData.amount),
             category: this.formData.category,
             description: this.formData.description,
-            transaction_date: this.formData.transaction_date
+            transaction_date: this.formData.transaction_date,
           },
-          { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        
-        await this.loadData();
-        this.closeModals();
-        this.resetForm();
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+
+        await this.loadData()
+        this.closeModals()
+        this.resetForm()
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al actualizar gasto';
+        this.error = err.response?.data?.message || 'Error al actualizar gasto'
       } finally {
-        this.submitting = false;
+        this.submitting = false
       }
     },
 
     openDeleteModal(transaction) {
-      this.transactionToDelete = transaction;
-      this.showDeleteModal = true;
+      this.transactionToDelete = transaction
+      this.showDeleteModal = true
     },
 
     async deleteTransaction() {
-      this.submitting = true;
-      const token = localStorage.getItem('token');
+      this.submitting = true
+      const token = localStorage.getItem('token')
 
       try {
         await axios.delete(
           `http://localhost:3000/api/transactions/${this.transactionToDelete.id}`,
-          { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        
-        await this.loadData();
-        this.closeModals();
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+
+        await this.loadData()
+        this.closeModals()
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al eliminar gasto';
+        this.error = err.response?.data?.message || 'Error al eliminar gasto'
       } finally {
-        this.submitting = false;
+        this.submitting = false
       }
     },
 
     applyFilters() {
-      this.loading = true;
-      this.loadTransactions();
+      this.loading = true
+      this.loadTransactions()
     },
 
     clearFilters() {
       this.filters = {
         category: '',
         start_date: '',
-        end_date: ''
-      };
-      this.applyFilters();
+        end_date: '',
+      }
+      this.applyFilters()
     },
 
     closeModals() {
-      this.showAddModal = false;
-      this.showEditModal = false;
-      this.showDeleteModal = false;
-      this.resetForm();
-      this.error = null;
+      this.showAddModal = false
+      this.showEditModal = false
+      this.showDeleteModal = false
+      this.resetForm()
+      this.error = null
     },
 
     resetForm() {
@@ -433,61 +429,47 @@ export default {
         amount: '',
         category: '',
         description: '',
-        transaction_date: this.getTodayDate()
-      };
-      this.editingTransactionId = null;
-      this.transactionToDelete = null;
+        transaction_date: this.getTodayDate(),
+      }
+      this.editingTransactionId = null
+      this.transactionToDelete = null
     },
 
     getTodayDate() {
-      return new Date().toISOString().split('T')[0];
+      return new Date().toISOString().split('T')[0]
     },
 
     handleLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      this.$router.push('/login');
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.$router.push('/login')
     },
 
     formatDate(dateString) {
-      const date = new Date(dateString);
+      const date = new Date(dateString)
       return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
-      });
-    }
-  }
-};
+        day: 'numeric',
+      })
+    },
+  },
+}
 </script>
 
 <style scoped>
 .transactions-page {
+  background-color: var(--color-fondo);
+  padding: 10px 5px 0 10px;
   min-height: 100vh;
-  background: #f5f5f5;
-}
 
-.navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 40px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex-direction: row;
+  justify-content: space-around;
 }
 
-.navbar h1 {
-  color: white;
-  margin: 0;
-  font-size: 24px;
-}
-
-.nav-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-secondary, .btn-logout {
+.btn-secondary,
+.btn-logout {
   background: white;
   color: #667eea;
   border: none;
@@ -498,14 +480,25 @@ export default {
   transition: transform 0.2s;
 }
 
-.btn-secondary:hover, .btn-logout:hover {
+.btn-secondary:hover,
+.btn-logout:hover {
   transform: translateY(-2px);
 }
 
 .transactions-content {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  border: 0.2px solid rgba(0, 0, 0, 0.1);
+  height: auto;
+  min-height: 87vh;
   padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+  border-radius: 16px;
+  width: 90vw;
+  max-width: 90vw;
+  margin: 20px 0 25px;
+  background-color: var(--color-comp);
+  box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.3);
 }
 
 .summary-section {
@@ -555,7 +548,7 @@ export default {
 }
 
 .btn-add {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-btn);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -603,8 +596,8 @@ export default {
 }
 
 .btn-clear-filters {
-  background: #f5f5f5;
-  color: #666;
+  background: var(--color-btn);
+  color: #ffffff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -818,7 +811,10 @@ export default {
   margin-top: 20px;
 }
 
-.btn-cancel, .btn-submit, .btn-primary, .btn-delete {
+.btn-cancel,
+.btn-submit,
+.btn-primary,
+.btn-delete {
   flex: 1;
   padding: 12px;
   border: none;
@@ -832,8 +828,9 @@ export default {
   color: #666;
 }
 
-.btn-submit, .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.btn-submit,
+.btn-primary {
+  background: var(--color-btn);
   color: white;
 }
 
@@ -852,17 +849,17 @@ export default {
   .transaction-item {
     flex-wrap: wrap;
   }
-  
+
   .transaction-amount {
     margin-right: 0;
     margin-top: 10px;
     width: 100%;
   }
-  
+
   .filters-section {
     flex-direction: column;
   }
-  
+
   .filter-group {
     width: 100%;
   }
