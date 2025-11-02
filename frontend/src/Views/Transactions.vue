@@ -281,7 +281,7 @@ export default {
     async loadCategories() {
       const token = localStorage.getItem('token')
       try {
-        const response = await axios.get('http://localhost:3000/api/categories', {
+        const response = await axios.get('http://localhost:3000/api/user-categories', {
           headers: { Authorization: `Bearer ${token}` },
         })
         this.categories = response.data

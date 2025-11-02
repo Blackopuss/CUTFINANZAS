@@ -102,11 +102,13 @@ const verifyToken = require("./middleware/verifyToken");
 const authRoutes = require("./routes/authRoutes")(db);
 const cardRoutes = require("./routes/cardRoutes")(db, verifyToken);
 const financeRoutes = require("./routes/financeRoutes")(db, verifyToken);
+const categoryRoutes = require("./routes/categoryRoutes")(db, verifyToken);
 
 // Usar rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/cards", cardRoutes);
 app.use("/api", financeRoutes);
+app.use("/api", categoryRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {

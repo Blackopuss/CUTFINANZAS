@@ -45,7 +45,7 @@ onMounted(() => {
 
 <template>
   <section>
-    <span>Nombre de la app</span>
+    <span>PiggyAI</span>
     <div class="container-actions">
       <span
         ><i class="fa-solid fa-user"></i
