@@ -21,7 +21,7 @@
           <i class="fa-solid fa-wallet"></i>Mis gastos</router-link
         >
       </span>
-      <span> <router-link to="" class="router-link">Lorem, ipsum.</router-link></span>
+      <span> <router-link to="/categorias" class="router-link"><i class="fa-solid fa-star"></i>Mis categorias</router-link></span>
       <span> <router-link to="" class="router-link">Lorem, ipsum.</router-link></span>
     </div>
   </section>

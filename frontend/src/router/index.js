@@ -5,6 +5,7 @@ import Dashboard from '../Views/Dashboard.vue'
 import Cards from '../Views/Cards.vue'
 import Transactions from '../Views/Transactions.vue'
 import Perfil from '../Views/PerfilView.vue'
+import Categorias from '../Views/CategoriasView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,12 @@ const router = createRouter({
       component: Perfil,
       meta: { requiresAuth: true },
     },
+    {
+      path: '/categorias',
+      name: 'Categorias',
+      component: Categorias,
+      meta: {requiresAuth: true}
+    }
   ],
 })
 

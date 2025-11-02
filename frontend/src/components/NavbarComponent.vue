@@ -133,7 +133,7 @@ button::before {
 }
 
 button:hover {
-  background-color: #151563;
+  opacity: 0.8;
 
   transform: translateY(-3px);
 }
