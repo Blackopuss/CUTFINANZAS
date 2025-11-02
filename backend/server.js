@@ -13,23 +13,23 @@ app.use(bodyParser.json());
 
 // Conexión a MySQL
 const db = mysql.createConnection({
-  host: "localhost",
-  //cambien poor su contrasena y usuario, cambie al mio. Comente la que sta en las emnv
-  user: "root",
-  password: "0206",
-  // password: process.env.DB_PASSWORD ,
-  database: "finanzas",
+	host: "localhost",
+	//cambien poor su contrasena y usuario, cambie al mio. Comente la que sta en las emnv
+	user: "admin",
+	password: "123456789",
+	// password: process.env.DB_PASSWORD ,
+	database: "finanzas",
 });
 
 db.connect((err) => {
-  if (err) {
-    console.error("❌ Error conectando a la base de datos:", err);
-    return;
-  }
-  console.log("✅ Conectado a MySQL");
+	if (err) {
+		console.error("❌ Error conectando a la base de datos:", err);
+		return;
+	}
+	console.log("✅ Conectado a MySQL");
 
-  // Crear tabla de usuarios si no existe
-  const createUsers = `
+	// Crear tabla de usuarios si no existe
+	const createUsers = `
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       username VARCHAR(50) UNIQUE NOT NULL,
@@ -38,13 +38,13 @@ db.connect((err) => {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
-  db.query(createUsers, (err) => {
-    if (err) console.error("Error creando tabla users:", err);
-    else console.log("Tabla 'users' lista ✅");
-  });
+	db.query(createUsers, (err) => {
+		if (err) console.error("Error creando tabla users:", err);
+		else console.log("Tabla 'users' lista ✅");
+	});
 
-  // Crear tabla de tarjetas si no existe
-  const createCards = `
+	// Crear tabla de tarjetas si no existe
+	const createCards = `
     CREATE TABLE IF NOT EXISTS cards (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
@@ -56,13 +56,13 @@ db.connect((err) => {
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
   `;
-  db.query(createCards, (err) => {
-    if (err) console.error("Error creando tabla cards:", err);
-    else console.log("Tabla 'cards' lista ✅");
-  });
+	db.query(createCards, (err) => {
+		if (err) console.error("Error creando tabla cards:", err);
+		else console.log("Tabla 'cards' lista ✅");
+	});
 
-  // Crear tabla de categorías
-  const createCategories = `
+	// Crear tabla de categorías
+	const createCategories = `
     CREATE TABLE IF NOT EXISTS categories (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(100) NOT NULL UNIQUE,
@@ -70,13 +70,13 @@ db.connect((err) => {
       color VARCHAR(20)
     )
   `;
-  db.query(createCategories, (err) => {
-    if (err) console.error("Error creando tabla categories:", err);
-    else console.log("Tabla 'categories' lista ✅");
-  });
+	db.query(createCategories, (err) => {
+		if (err) console.error("Error creando tabla categories:", err);
+		else console.log("Tabla 'categories' lista ✅");
+	});
 
-  // Crear tabla de transacciones
-  const createTransactions = `
+	// Crear tabla de transacciones
+	const createTransactions = `
     CREATE TABLE IF NOT EXISTS transactions (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
@@ -91,10 +91,10 @@ db.connect((err) => {
       FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE SET NULL
     )
   `;
-  db.query(createTransactions, (err) => {
-    if (err) console.error("Error creando tabla transactions:", err);
-    else console.log("Tabla 'transactions' lista ✅");
-  });
+	db.query(createTransactions, (err) => {
+		if (err) console.error("Error creando tabla transactions:", err);
+		else console.log("Tabla 'transactions' lista ✅");
+	});
 });
 
 // Importar middleware y rutas
@@ -110,5 +110,5 @@ app.use("/api", financeRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+	console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
