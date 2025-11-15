@@ -327,20 +327,8 @@ module.exports = (db, verifyToken) => {
 										);
 									}
 
-									// 🔥 INSERTAR NOTIFICACIÓN SI LA META SE COMPLETÓ
 									if (Math.abs(newTotal - target) < 0.00001) {
-										const insertNotif = `
-											INSERT INTO notifications (user_id, type, message, created_at)
-											VALUES (?, 'meta_completada', ?, NOW())
-										`;
-
 										const msg = `🎉 ¡Has completado tu meta "${goal.name}"!`;
-
-										db.query(insertNotif, [req.userId, msg], (err) => {
-											if (err) {
-												console.error("Error insertando notificación:", err);
-											}
-										});
 									}
 
 									res.status(201).json({

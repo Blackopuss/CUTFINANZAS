@@ -55,10 +55,15 @@ module.exports = (db, verifyToken) => {
 	// RUTAS DE GESTIÓN DE GASTOS
 	// ============================================
 
-	// Obtener todas las categorías
+	// Obtener todas las categorías (user + default)
 	router.get("/categories", verifyToken, (req, res) => {
-		const query = "SELECT * FROM categories ORDER BY name";
-		db.query(query, (err, results) => {
+		const query = `
+            SELECT name, icon, color FROM user_categories WHERE user_id = ?
+            UNION ALL
+            SELECT name, icon, color FROM default_categories
+            ORDER BY name
+        `;
+		db.query(query, [req.userId], (err, results) => {
 			if (err)
 				return res.status(500).json({ message: "Error al obtener categorías" });
 			res.json(results);
@@ -108,9 +113,10 @@ module.exports = (db, verifyToken) => {
 							.json({ message: "Error al iniciar transacción" });
 
 					const insertQuery = `
-            INSERT INTO transactions (user_id, card_id, amount, type, category, description, transaction_date) 
-            VALUES (?, ?, ?, 'gasto', ?, ?, ?)
-          `;
+                        INSERT INTO transactions 
+                        (user_id, card_id, amount, type, category, description, transaction_date) 
+                        VALUES (?, ?, ?, 'gasto', ?, ?, ?)
+                    `;
 
 					db.query(
 						insertQuery,
@@ -161,9 +167,10 @@ module.exports = (db, verifyToken) => {
 			});
 		} else {
 			const insertQuery = `
-        INSERT INTO transactions (user_id, card_id, amount, type, category, description, transaction_date) 
-        VALUES (?, NULL, ?, 'gasto', ?, ?, ?)
-      `;
+                INSERT INTO transactions 
+                (user_id, card_id, amount, type, category, description, transaction_date) 
+                VALUES (?, NULL, ?, 'gasto', ?, ?, ?)
+            `;
 			db.query(
 				insertQuery,
 				[
@@ -193,11 +200,19 @@ module.exports = (db, verifyToken) => {
 			req.query;
 
 		let query = `
-      SELECT t.*, c.card_name, c.bank_name, cat.icon, cat.color
-      FROM transactions t
-      LEFT JOIN cards c ON t.card_id = c.id
-      LEFT JOIN categories cat ON t.category = cat.name
-      WHERE t.user_id = ?
+        SELECT DISTINCT t.id, t.user_id, t.card_id, t.amount, t.type, 
+               t.category, t.description, t.transaction_date, t.created_at,
+               c.card_name, c.bank_name,
+               COALESCE(cat.icon, '💸') AS icon,
+               COALESCE(cat.color, '#000000') AS color
+        FROM transactions t
+        LEFT JOIN cards c ON t.card_id = c.id
+        LEFT JOIN (
+            SELECT name, icon, color FROM default_categories
+            UNION 
+            SELECT name, icon, color FROM user_categories
+        ) AS cat ON t.category = cat.name
+        WHERE t.user_id = ?
     `;
 		const params = [req.userId];
 
@@ -235,12 +250,22 @@ module.exports = (db, verifyToken) => {
 	router.get("/transactions/:id", verifyToken, (req, res) => {
 		const transactionId = req.params.id;
 		const query = `
-      SELECT t.*, c.card_name, c.bank_name 
-      FROM transactions t
-      LEFT JOIN cards c ON t.card_id = c.id
-      WHERE t.id = ? AND t.user_id = ?
-    `;
-		db.query(query, [transactionId, req.userId], (err, results) => {
+            SELECT 
+                t.*, 
+                c.card_name, 
+                c.bank_name,
+                cat.icon,
+                cat.color
+            FROM transactions t
+            LEFT JOIN cards c ON t.card_id = c.id
+            LEFT JOIN (
+                SELECT name, icon, color FROM user_categories WHERE user_id = ?
+                UNION ALL
+                SELECT name, icon, color FROM default_categories
+            ) cat ON t.category = cat.name
+            WHERE t.id = ? AND t.user_id = ?
+        `;
+		db.query(query, [req.userId, transactionId, req.userId], (err, results) => {
 			if (err)
 				return res
 					.status(500)
@@ -309,10 +334,10 @@ module.exports = (db, verifyToken) => {
 								);
 
 							const updateQuery = `
-                UPDATE transactions 
-                SET amount = ?, category = ?, description = ?, transaction_date = ?
-                WHERE id = ? AND user_id = ?
-              `;
+                                UPDATE transactions 
+                                SET amount = ?, category = ?, description = ?, transaction_date = ?
+                                WHERE id = ? AND user_id = ?
+                            `;
 							db.query(
 								updateQuery,
 								[
@@ -334,13 +359,13 @@ module.exports = (db, verifyToken) => {
 									db.commit((err) => {
 										if (err)
 											return db.rollback(() =>
-												res
-													.status(500)
-													.json({
-														message: "Error al confirmar actualización",
-													}),
+												res.status(500).json({
+													message: "Error al confirmar actualización",
+												}),
 											);
-										res.json({ message: "Gasto actualizado exitosamente" });
+										res.json({
+											message: "Gasto actualizado exitosamente",
+										});
 									});
 								},
 							);
@@ -349,10 +374,10 @@ module.exports = (db, verifyToken) => {
 				});
 			} else {
 				const updateQuery = `
-          UPDATE transactions 
-          SET amount = ?, category = ?, description = ?, transaction_date = ?
-          WHERE id = ? AND user_id = ?
-        `;
+                    UPDATE transactions 
+                    SET amount = ?, category = ?, description = ?, transaction_date = ?
+                    WHERE id = ? AND user_id = ?
+                `;
 				db.query(
 					updateQuery,
 					[

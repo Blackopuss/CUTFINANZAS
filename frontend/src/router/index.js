@@ -7,6 +7,7 @@ import Transactions from '../Views/Transactions.vue'
 import Perfil from '../Views/PerfilView.vue'
 import Categorias from '../Views/CategoriasView.vue'
 import MetasView from '../Views/MetasView.vue'
+import NotificacionesView from '../Views/NotificacionesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,12 @@ const router = createRouter({
       path: '/metas',
       name: 'metas',
       component: MetasView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/notificaciones',
+      name: 'notificaciones',
+      component: NotificacionesView,
       meta: { requiresAuth: true },
     },
   ],

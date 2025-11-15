@@ -53,7 +53,7 @@ onMounted(() => {
       >
       <span
         ><i class="fa-solid fa-bell"></i
-        ><RouterLink to="/nosotros" class="link">Notificaciones</RouterLink></span
+        ><RouterLink to="/notificaciones" class="link">Notificaciones</RouterLink></span
       >
       <button @click="salir">Cerrar Sesión</button>
     </div>

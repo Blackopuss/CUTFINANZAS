@@ -108,6 +108,7 @@ const notificationRoutes = require("./routes/notificationRoutes")(
 	db,
 	verifyToken,
 );
+const profileRoutes = require("./routes/profileRoutes")(db, verifyToken);
 
 // Usar rutas
 app.use("/api/auth", authRoutes);
@@ -116,6 +117,7 @@ app.use("/api", financeRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", savingsRoutes);
 app.use("/api", notificationRoutes);
+app.use("/api", profileRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
