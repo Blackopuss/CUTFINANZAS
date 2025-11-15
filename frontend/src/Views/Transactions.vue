@@ -481,7 +481,6 @@ export default {
 .transactions-content {
   display: flex;
   flex-direction: column;
-  gap: 50px;
   border: 0.2px solid rgba(0, 0, 0, 0.1);
   height: auto;
   min-height: 87vh;
@@ -558,8 +557,8 @@ export default {
 .filters-section {
   background: white;
   padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 10px 10px 0 0; /* Redondeado solo arriba */
+  margin-bottom: 0;             /* 🔥 Une las secciones */
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
@@ -619,7 +618,7 @@ export default {
 
 .transactions-list {
   background: white;
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px; /* 🔥 Completa el bloque unido */
   overflow: hidden;
 }
 
