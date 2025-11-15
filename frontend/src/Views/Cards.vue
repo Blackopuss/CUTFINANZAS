@@ -24,7 +24,7 @@
             </span>
           </div>
           <p class="bank-name">{{ card.bank_name }}</p>
-          <p class="card-balance">Saldo: ${{ parseFloat(card.balance || 0).toFixed(2) }}</p>
+          <h4 class="card-balance">Saldo: ${{ parseFloat(card.balance || 0).toFixed(2) }}</h4>
           <p class="card-date">Agregada: {{ formatDate(card.created_at) }}</p>
 
           <div class="card-actions">

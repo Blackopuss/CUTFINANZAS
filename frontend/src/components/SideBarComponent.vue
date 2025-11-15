@@ -4,40 +4,67 @@
 
 <template>
   <section>
-    <span><img src="../../assets/logo.jpg" alt="" /></span>
+     <router-link to="/dashboard">
+      <img src="../../assets/logo.jpg" alt="Logo PiggyAI" />
+    </router-link>
+
     <div class="container-elements">
+      
       <span>
         <router-link to="/" class="router-link">
-          <i class="fa-solid fa-house"></i>Home</router-link
-        ></span
-      >
+          <i class="fa-solid fa-house"></i>Home
+        </router-link>
+      </span>
+
       <span>
-        <router-link to="/cards" class="router-link"
-          ><i class="fa-solid fa-credit-card"></i>Administrar tarjetas</router-link
-        ></span
-      >
+        <router-link to="/cards" class="router-link">
+          <i class="fa-solid fa-credit-card"></i>Administrar tarjetas
+        </router-link>
+      </span>
+
       <span>
         <router-link to="/transactions" class="router-link">
-          <i class="fa-solid fa-wallet"></i>Mis gastos</router-link
-        >
+          <i class="fa-solid fa-wallet"></i>Mis gastos
+        </router-link>
       </span>
-      <span> <router-link to="/categorias" class="router-link"><i class="fa-solid fa-star"></i>Mis categorias</router-link></span>
-      <span> <router-link to="" class="router-link">Lorem, ipsum.</router-link></span>
+
+      <span>
+        <router-link to="/categorias" class="router-link">
+          <i class="fa-solid fa-star"></i>Mis categorias
+        </router-link>
+      </span>
+
+    
+      <span>
+        <router-link to="/metas" class="router-link">
+            <i class="fa-solid fa-bullseye"></i> Metas de Ahorro
+        </router-link>
+      </span>
+
+   
     </div>
   </section>
 </template>
 
 <style scoped>
 section {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+display: flex;
+  flex-direction: column; 
+  align-items: center;     
+  justify-content: flex-start; 
+  padding: 20px 0;;
+}
+section a {
+  text-decoration: none;
+}
+section img {
+  cursor: pointer;
 }
 .container-elements {
   display: flex;
   flex-direction: column;
   gap: 10vh;
+  margin-top: 20px;
   height: 80vh;
 }
 .router-link {

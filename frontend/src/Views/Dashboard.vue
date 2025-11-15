@@ -21,27 +21,37 @@
         </article>
 
         <section class="actions-section" aria-labelledby="quick-actions-title">
-          <h3 id="quick-actions-title">Acciones Rápidas</h3>
-          <div class="action-buttons">
-            <button
-              @click="$router.push('/cards')"
-              class="action-btn"
-              aria-label="Ir a mis tarjetas"
-            >
-              <span class="icon" aria-hidden="true">💳</span>
-              <span>Mis Tarjetas</span>
-            </button>
+  <h3 id="quick-actions-title">Acciones Rápidas</h3>
+  <div class="action-buttons">
+    <button
+      @click="$router.push('/cards')"
+      class="action-btn"
+      aria-label="Ir a mis tarjetas"
+    >
+      <span class="icon" aria-hidden="true">💳</span>
+      <span>Mis Tarjetas</span>
+    </button>
 
-            <button
-              @click="$router.push('/transactions')"
-              class="action-btn"
-              aria-label="Ir a mis gastos"
-            >
-              <span class="icon" aria-hidden="true">💸</span>
-              <span>Mis Gastos</span>
-            </button>
-          </div>
-        </section>
+    <button
+      @click="$router.push('/transactions')"
+      class="action-btn"
+      aria-label="Ir a mis gastos"
+    >
+      <span class="icon" aria-hidden="true">💸</span>
+      <span>Mis Gastos</span>
+    </button>
+
+    <button
+      @click="$router.push('/metas')"
+      class="action-btn"
+      aria-label="Ir a mis metas"
+    >
+      <span class="icon" aria-hidden="true">🎯</span>
+      <span>Mis Metas</span>
+    </button>
+  </div>
+</section>
+
       </section>
 
       <div v-else class="error">No se pudo cargar la información del usuario.</div>

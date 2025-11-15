@@ -45,7 +45,7 @@ onMounted(() => {
 
 <template>
   <section>
-    <span>PiggyAI</span>
+    <h1>PiggyAI</h1>
     <div class="container-actions">
       <span
         ><i class="fa-solid fa-user"></i
@@ -74,14 +74,19 @@ section {
   overflow: hidden;
 }
 .container-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 10px 20px;
+  width: auto;   
+  max-width: 100%;
   box-shadow: 2px 2px 10px -2px rgba(0, 0, 0, 0.3);
   border: 0.2px solid rgba(0, 0, 0, 0.07);
   border-radius: 10px;
-  padding: 10px 40px 10px;
-  width: 27vw;
-  display: flex;
-  gap: 6vw;
 }
+
 .container-actions span {
   display: flex;
   align-items: center;
@@ -141,4 +146,42 @@ button:hover {
 button:hover::before {
   opacity: 1;
 }
+
+
+@media (max-width: 900px) {
+  .container-actions {
+    width: 60vw;
+    gap: 3vw;
+    padding: 8px 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  section {
+    padding: 0 20px;
+    flex-direction: column; /* ⬅ Título arriba, acciones abajo */
+    height: auto;
+    gap: 12px;
+  }
+
+  .container-actions {
+    width: 90vw;
+    justify-content: space-around;
+    gap: 4vw;
+  }
+}
+
+@media (max-width: 440px) {
+  .container-actions {
+    flex-direction: column;   /* ⬅ Cada elemento en columna */
+    padding: 12px;
+    gap: 12px;
+  }
+
+  button {
+    width: 100%;             /* ⬅ Botón ancho completo */
+    min-width: unset;
+  }
+}
+
 </style>

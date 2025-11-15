@@ -103,12 +103,19 @@ const authRoutes = require("./routes/authRoutes")(db);
 const cardRoutes = require("./routes/cardRoutes")(db, verifyToken);
 const financeRoutes = require("./routes/financeRoutes")(db, verifyToken);
 const categoryRoutes = require("./routes/categoryRoutes")(db, verifyToken);
+const savingsRoutes = require("./routes/savingsRoutes")(db, verifyToken);
+const notificationRoutes = require("./routes/notificationRoutes")(
+	db,
+	verifyToken,
+);
 
 // Usar rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/cards", cardRoutes);
 app.use("/api", financeRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", savingsRoutes);
+app.use("/api", notificationRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {

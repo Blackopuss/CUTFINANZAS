@@ -1,41 +1,32 @@
 <template>
   <div class="transactions-page">
     <SideBarComponent />
-    <!-- <nav class="navbar">
-      <h1>Historial de Gastos</h1>
-      <div class="nav-buttons">
-        <button @click="$router.push('/dashboard')" class="btn-secondary">
-          Volver al Dashboard
-        </button>
-        <button @click="handleLogout" class="btn-logout">Cerrar Sesión</button>
-      </div>
-    </nav> -->
 
     <div class="transactions-content">
       <!-- Resumen Total -->
       <NavbarComponent />
       <div class="summary-section">
         <div class="summary-card total-balance">
-          <h3>💰 Saldo Total</h3>
-          <p class="amount">${{ totalBalance }}</p>
+          <h2>💰 Saldo Total</h2>
+          <h3 class="amount">${{ totalBalance }}</h3>
         </div>
         <div class="summary-card total-expenses">
-          <h3>💸 Gastos Totales</h3>
-          <p class="amount">${{ totalExpenses }}</p>
+          <h2>💸 Gastos Totales</h2>
+          <h3 class="amount">${{ totalExpenses }}</h3>
         </div>
       </div>
 
       <!-- Header con botones -->
       <div class="header-section">
-        <h2>Mis Gastos</h2>
+        <h3>Mis Gastos</h3>
         <button @click="showAddModal = true" class="btn-add">+ Registrar Gasto</button>
       </div>
 
       <!-- Filtros -->
       <div class="filters-section">
         <div class="filter-group">
-          <label>Categoría</label>
-          <select v-model="filters.category" @change="applyFilters">
+       <label for="filtro-categoria">Categoría</label>
+        <select id="filtro-categoria" v-model="filters.category" @change="applyFilters">
             <option value="">Todas</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.name">
               {{ cat.icon }} {{ cat.name }}
@@ -44,13 +35,13 @@
         </div>
 
         <div class="filter-group">
-          <label>Fecha Desde</label>
-          <input type="date" v-model="filters.start_date" @change="applyFilters" />
+          <label for="fecha-desde">Fecha Desde</label>
+  <input id="fecha-desde" type="date" v-model="filters.start_date" @change="applyFilters" />
         </div>
 
         <div class="filter-group">
-          <label>Fecha Hasta</label>
-          <input type="date" v-model="filters.end_date" @change="applyFilters" />
+         <label for="fecha-hasta">Fecha Hasta</label>
+  <input id="fecha-hasta" type="date" v-model="filters.end_date" @change="applyFilters" />
         </div>
 
         <button @click="clearFilters" class="btn-clear-filters">Limpiar Filtros</button>
@@ -71,7 +62,7 @@
           </div>
 
           <div class="transaction-info">
-            <h4>{{ transaction.category }}</h4>
+            <h3>{{ transaction.category }}</h3>
             <p class="description">{{ transaction.description || 'Sin descripción' }}</p>
             <p class="date">{{ formatDate(transaction.transaction_date) }}</p>
             <p v-if="transaction.card_name" class="card-info">
@@ -80,7 +71,7 @@
           </div>
 
           <div class="transaction-amount">
-            <p class="amount">${{ parseFloat(transaction.amount).toFixed(2) }}</p>
+            <h3 class="amount">${{ parseFloat(transaction.amount).toFixed(2) }}</h3>
           </div>
 
           <div class="transaction-actions">
@@ -100,8 +91,9 @@
 
         <form @submit.prevent="showEditModal ? updateTransaction() : addTransaction()">
           <div class="form-group">
-            <label>Monto *</label>
-            <input
+            <label for="monto">Monto *</label>
+            <input 
+              id="monto"
               type="number"
               v-model="formData.amount"
               step="0.01"
@@ -112,8 +104,8 @@
           </div>
 
           <div class="form-group">
-            <label>Tarjeta (opcional)</label>
-            <select v-model="formData.card_id">
+        <label for="tarjeta">Tarjeta (opcional)</label>
+              <select id="tarjeta" v-model="formData.card_id">
               <option value="">Sin tarjeta</option>
               <option v-for="card in cards" :key="card.id" :value="card.id">
                 {{ card.card_name }} - Saldo: ${{ parseFloat(card.balance || 0).toFixed(2) }}
@@ -122,8 +114,8 @@
           </div>
 
           <div class="form-group">
-            <label>Categoría *</label>
-            <select v-model="formData.category" required>
+            <label for="categoria-form">Categoría *</label>
+            <select id="categoria-form" v-model="formData.category" required>
               <option value="">Selecciona una categoría</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.name">
                 {{ cat.icon }} {{ cat.name }}
@@ -132,8 +124,9 @@
           </div>
 
           <div class="form-group">
-            <label>Descripción</label>
+        <label for="descripcion">Descripción</label>
             <textarea
+            id="descripcion"
               v-model="formData.description"
               placeholder="Ej: Compra en supermercado"
               rows="3"
@@ -141,8 +134,8 @@
           </div>
 
           <div class="form-group">
-            <label>Fecha *</label>
-            <input type="date" v-model="formData.transaction_date" required />
+         <label for="fecha">Fecha *</label>
+            <input id="fecha" type="date" v-model="formData.transaction_date" required />
           </div>
 
           <div v-if="error" class="error-message">{{ error }}</div>
@@ -668,19 +661,19 @@ export default {
 }
 
 .transaction-info .description {
-  color: #666;
+  color: #0d0d0d;
   margin: 3px 0;
   font-size: 14px;
 }
 
 .transaction-info .date {
-  color: #999;
+  color: #0d0d0d   ;
   font-size: 13px;
   margin: 3px 0;
 }
 
 .transaction-info .card-info {
-  color: #667eea;
+  color: #3949ab;
   font-size: 12px;
   margin: 5px 0 0 0;
 }
