@@ -14,10 +14,8 @@ app.use(bodyParser.json());
 // Conexión a MySQL
 const db = mysql.createConnection({
 	host: "localhost",
-	//cambien poor su contrasena y usuario, cambie al mio. Comente la que sta en las emnv
 	user: "admin",
 	password: "123456789",
-	// password: process.env.DB_PASSWORD ,
 	database: "finanzas",
 });
 
@@ -43,7 +41,7 @@ db.connect((err) => {
 		else console.log("Tabla 'users' lista ✅");
 	});
 
-	// Crear tabla de tarjetas si no existe
+	// Crear tabla de tarjetas
 	const createCards = `
     CREATE TABLE IF NOT EXISTS cards (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -61,7 +59,7 @@ db.connect((err) => {
 		else console.log("Tabla 'cards' lista ✅");
 	});
 
-	// Crear tabla de categorías
+	// Crear tabla categorías
 	const createCategories = `
     CREATE TABLE IF NOT EXISTS categories (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -75,7 +73,7 @@ db.connect((err) => {
 		else console.log("Tabla 'categories' lista ✅");
 	});
 
-	// Crear tabla de transacciones
+	// Crear tabla transacciones
 	const createTransactions = `
     CREATE TABLE IF NOT EXISTS transactions (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,6 +97,7 @@ db.connect((err) => {
 
 // Importar middleware y rutas
 const verifyToken = require("./middleware/verifyToken");
+
 const authRoutes = require("./routes/authRoutes")(db);
 const cardRoutes = require("./routes/cardRoutes")(db, verifyToken);
 const financeRoutes = require("./routes/financeRoutes")(db, verifyToken);
@@ -109,6 +108,7 @@ const notificationRoutes = require("./routes/notificationRoutes")(
 	verifyToken,
 );
 const profileRoutes = require("./routes/profileRoutes")(db, verifyToken);
+const analytics = require("./routes/analytics")(db, verifyToken);
 
 // Usar rutas
 app.use("/api/auth", authRoutes);
@@ -118,6 +118,7 @@ app.use("/api", categoryRoutes);
 app.use("/api", savingsRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", profileRoutes);
+app.use("/api", analytics);
 
 // Iniciar servidor
 app.listen(PORT, () => {
