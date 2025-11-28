@@ -34,6 +34,7 @@
               <button @click="setQuickFilter('30days')" class="quick-btn">30 días</button>
               <button @click="setQuickFilter('90days')" class="quick-btn">90 días</button>
               <button @click="setQuickFilter('year')" class="quick-btn">Este año</button>
+              <button @click="setQuickFilter('all')" class="quick-btn">Todo</button>
             </div>
           </div>
         </div>
@@ -142,12 +143,14 @@
         </div>
       </div>
     </div>
+    <FinanceChat />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavbarComponent.vue'
 import SideBarComponent from '../components/SideBarComponent.vue'
+import FinanceChat from '@/components/FinanceChat.vue'
 import axios from 'axios'
 import Chart from 'chart.js/auto'
 
@@ -156,7 +159,8 @@ export default {
   name: 'DashboardVue',
   components: {
     SideBarComponent,
-    NavBar
+    NavBar,
+    FinanceChat
   },
   data() {
     return {
@@ -404,6 +408,9 @@ export default {
           break
         case 'year':
           this.filters.start_date = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0]
+          break
+        case 'all':
+          this.filters.start_date = '2000-01-01'
           break
       }
 

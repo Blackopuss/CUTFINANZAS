@@ -119,6 +119,8 @@ app.use("/api", savingsRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", profileRoutes);
 app.use("/api", analytics);
+const aiRoutes = require("./routes/aiRoutes")(db, verifyToken);
+app.use("/api", aiRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {

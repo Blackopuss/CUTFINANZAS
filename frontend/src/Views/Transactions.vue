@@ -88,6 +88,17 @@
     <div v-if="showAddModal || showEditModal" class="modal-overlay" @click="closeModals">
       <div class="modal" @click.stop>
         <h3>{{ showEditModal ? 'Editar Gasto' : 'Registrar Gasto' }}</h3>
+        
+        <div v-if="!showEditModal" class="scan-option">
+          <button @click="showCamera = true; showAddModal = false" class="btn-scan">
+            📷 Escanear Ticket con IA
+          </button>
+        </div>
+
+        <div v-if="analyzingReceipt" class="analyzing-overlay">
+          <div class="spinner"></div>
+          <p>Analizando recibo...</p>
+        </div>
 
         <form @submit.prevent="showEditModal ? updateTransaction() : addTransaction()">
           <div class="form-group">
@@ -171,6 +182,12 @@
         </div>
       </div>
     </div>
+    
+    <CameraCapture 
+      v-if="showCamera" 
+      @close="showCamera = false; showAddModal = true" 
+      @image-captured="handleImageCaptured" 
+    />
   </div>
 </template>
 
@@ -178,12 +195,14 @@
 import axios from 'axios'
 import NavbarComponent from '@/components/NavbarComponent.vue'
 import SideBarComponent from '@/components/SideBarComponent.vue'
+import CameraCapture from '@/components/CameraCapture.vue'
 
 export default {
   name: 'TransactionsVue',
   components: {
     SideBarComponent,
     NavbarComponent,
+    CameraCapture
   },
   data() {
     return {
@@ -194,6 +213,8 @@ export default {
       showAddModal: false,
       showEditModal: false,
       showDeleteModal: false,
+      showCamera: false,
+      analyzingReceipt: false,
       submitting: false,
       error: null,
       totalBalance: '0.00',
@@ -446,6 +467,78 @@ export default {
         day: 'numeric',
       })
     },
+
+   async handleImageCaptured(imageData) {
+  this.showCamera = false;
+  this.showAddModal = true;
+  this.analyzingReceipt = true;
+
+  const res = await fetch(imageData);
+  const blob = await res.blob();
+
+  const formData = new FormData();
+  formData.append("image", blob, "receipt.jpg");
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/analyze-receipt",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    const data = response.data;
+
+    console.log("Resultado IA:", data); // <- ver qué llega
+
+    // --- MONTO ---
+    if (data.amount !== undefined && data.amount !== null) {
+      this.formData.amount = data.amount;
+    }
+
+    // --- FECHA ---
+    if (data.date) {
+      this.formData.transaction_date = data.date;
+    }
+
+    // --- DESCRIPCIÓN ---
+    if (data.description) {
+       this.formData.description = data.description;
+    } else if (Array.isArray(data.products) && data.products.length > 0) {
+       this.formData.description = data.products.join(", ");
+    }
+
+    // --- CATEGORÍA ---
+    if (data.category) {
+      const normalizedIA = data.category.trim().toLowerCase();
+
+      const match = this.categories.find(
+        c => c.name.trim().toLowerCase() === normalizedIA
+      );
+
+      if (match) {
+        this.formData.category = match.name;
+      } else {
+        // La IA dio una categoría no existente
+        this.formData.category = "";
+        this.error = `Categoría sugerida por IA: "${data.category}". Selecciónala manualmente.`;
+      }
+    }
+
+  } catch (error) {
+    console.error("Error analyzing receipt:", error);
+    this.error = "No se pudo analizar el recibo. Por favor ingresa los datos manualmente.";
+  } finally {
+    this.analyzingReceipt = false;
+  }
+}
+
   },
 }
 </script>
@@ -798,6 +891,72 @@ export default {
 }
 
 .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.scan-option {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-scan {
+  background: linear-gradient(
+    135deg,
+    var(--color-btn) 0%,
+    color-mix(in srgb, var(--color-btn), white 20%) 100%
+  );
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-scan:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.analyzing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 10px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.btn-group {
   display: flex;
   gap: 10px;
   margin-top: 20px;

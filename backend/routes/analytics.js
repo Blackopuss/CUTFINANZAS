@@ -23,7 +23,7 @@ module.exports = (db, verifyToken) => {
       SUM(amount) as total_amount,
       COUNT(*) as transaction_count
     FROM transactions
-    WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
+    WHERE user_id = ? AND type = 'gasto' AND transaction_date BETWEEN ? AND ?
     GROUP BY DATE(transaction_date)
     ORDER BY date ASC
   `;
@@ -51,15 +51,16 @@ module.exports = (db, verifyToken) => {
 		const query = `
     SELECT 
       t.category,
-      uc.icon,
-      uc.color,
+      COALESCE(uc.icon, dc.icon) as icon,
+      COALESCE(uc.color, dc.color) as color,
       SUM(t.amount) as total_amount,
       COUNT(t.id) as transaction_count,
-      ROUND((SUM(t.amount) / (SELECT SUM(amount) FROM transactions WHERE user_id = ? AND transaction_date BETWEEN ? AND ?)) * 100, 2) as percentage
+      ROUND((SUM(t.amount) / (SELECT SUM(amount) FROM transactions WHERE user_id = ? AND type = 'gasto' AND transaction_date BETWEEN ? AND ?)) * 100, 2) as percentage
     FROM transactions t
     LEFT JOIN user_categories uc ON t.category = uc.name AND t.user_id = uc.user_id
-    WHERE t.user_id = ? AND t.transaction_date BETWEEN ? AND ?
-    GROUP BY t.category, uc.icon, uc.color
+    LEFT JOIN default_categories dc ON t.category = dc.name
+    WHERE t.user_id = ? AND t.type = 'gasto' AND t.transaction_date BETWEEN ? AND ?
+    GROUP BY t.category, uc.icon, uc.color, dc.icon, dc.color
     ORDER BY total_amount DESC
   `;
 
@@ -85,7 +86,7 @@ module.exports = (db, verifyToken) => {
       COUNT(*) as transaction_count,
       AVG(amount) as avg_amount
     FROM transactions
-    WHERE user_id = ? AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+    WHERE user_id = ? AND type = 'gasto' AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
     GROUP BY DATE_FORMAT(transaction_date, '%Y-%m')
     ORDER BY month ASC
   `;
@@ -108,7 +109,7 @@ module.exports = (db, verifyToken) => {
       SUM(amount) as total_amount,
       COUNT(*) as transaction_count
     FROM transactions
-    WHERE user_id = ? AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
+    WHERE user_id = ? AND type = 'gasto' AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
     GROUP BY YEAR(transaction_date), WEEK(transaction_date)
     ORDER BY year, week_number ASC
   `;
@@ -140,9 +141,9 @@ module.exports = (db, verifyToken) => {
       AVG(amount) as avg_transaction,
       MAX(amount) as max_transaction,
       MIN(amount) as min_transaction,
-      (SELECT category FROM transactions WHERE user_id = ? AND transaction_date BETWEEN ? AND ? GROUP BY category ORDER BY SUM(amount) DESC LIMIT 1) as top_category
+      (SELECT category FROM transactions WHERE user_id = ? AND type = 'gasto' AND transaction_date BETWEEN ? AND ? GROUP BY category ORDER BY SUM(amount) DESC LIMIT 1) as top_category
     FROM transactions
-    WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
+    WHERE user_id = ? AND type = 'gasto' AND transaction_date BETWEEN ? AND ?
   `;
 
 		db.query(
@@ -182,14 +183,14 @@ module.exports = (db, verifyToken) => {
       SUM(amount) as total_amount,
       COUNT(*) as transaction_count
     FROM transactions
-    WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
+    WHERE user_id = ? AND type = 'gasto' AND transaction_date BETWEEN ? AND ?
     UNION ALL
     SELECT 
       'previous' as period,
       SUM(amount) as total_amount,
       COUNT(*) as transaction_count
     FROM transactions
-    WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
+    WHERE user_id = ? AND type = 'gasto' AND transaction_date BETWEEN ? AND ?
   `;
 
 		db.query(

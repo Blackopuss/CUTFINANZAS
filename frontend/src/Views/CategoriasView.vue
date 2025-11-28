@@ -501,6 +501,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   transition: all 0.3s;
 }
 
@@ -512,8 +513,9 @@ export default {
 .category-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  flex: 1;
+  gap: 12px;
+  flex: 1 1 auto; 
+  min-width: 0;   
 }
 
 .category-icon {
