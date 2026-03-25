@@ -1,9 +1,0 @@
-com\example\user_service\repositories\UsuarioRepository.class
-com\example\user_service\exceptions\GlobalExceptionHandler.class
-com\example\user_service\models\UserResponse.class
-com\example\user_service\UserServiceApplication.class
-com\example\user_service\services\UsuarioService.class
-com\example\user_service\models\UsuarioModel.class
-com\example\user_service\ServletInitializer.class
-com\example\user_service\controllers\UsuarioController.class
-com\example\user_service\models\LoginRequest.class
