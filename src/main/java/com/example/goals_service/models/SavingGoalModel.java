@@ -28,7 +28,7 @@ public class SavingGoalModel {
     
     private String name; 
     @Column(name = "target_amount")
-    private BigDecimal targetAmiount;
+    private BigDecimal targetAmount;
     @Column(name = "current_amount")
     private BigDecimal currentAmount;
     @Column(name = "dead_line") 
@@ -40,11 +40,11 @@ public class SavingGoalModel {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public SavingGoalModel(Long id, Long userId, String name, BigDecimal targetAmiount, BigDecimal currentAmount, LocalDate deadLine, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public SavingGoalModel(Long id, Long userId, String name, BigDecimal targetAmount, BigDecimal currentAmount, LocalDate deadLine, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.userId = userId;
         this.name = name;
-        this.targetAmiount = targetAmiount;
+        this.targetAmount = targetAmount;
         this.currentAmount = currentAmount;
         this.deadLine = deadLine;
         this.status = status;
@@ -72,11 +72,11 @@ public class SavingGoalModel {
     public void setName(String name) {
         this.name = name;
     }
-    public BigDecimal getTargetAmiount() {
-        return targetAmiount;
+    public BigDecimal getTargetAmount() {
+        return targetAmount;
     }
-    public void setTargetAmiount(BigDecimal targetAmiount) {
-        this.targetAmiount = targetAmiount;
+    public void setTargetAmount(BigDecimal targetAmount) {
+        this.targetAmount = targetAmount;
     }
     public BigDecimal getCurrentAmount() {
         return currentAmount;

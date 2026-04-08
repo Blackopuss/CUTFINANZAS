@@ -3,7 +3,7 @@
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
 
-import com.example.goals_service.models.GoalContributation;
+import com.example.goals_service.models.GoalContributationModel;
 import com.example.goals_service.models.SavingGoalModel;
     import com.example.goals_service.repositories.GoalRepositorie;
     import com.example.goals_service.repositories.SavingsGoalRepository;
@@ -19,6 +19,7 @@ import java.util.List;
         @Autowired
         public SavingsGoalRepository savingsGoalRepository;
 
+        //servicio de savinf goal
         public List<SavingGoalModel> getAllGoals(){ 
             return savingsGoalRepository.findAll(); 
         }
@@ -39,7 +40,7 @@ import java.util.List;
 
        upG.setUserId(data.getUserId());
        upG.setName(data.getName());
-       upG.setTargetAmiount(data.getTargetAmiount());
+       upG.setTargetAmount(data.getTargetAmount());
        upG.setCurrentAmount(data.getCurrentAmount());
        upG.setDeadLine(data.getDeadLine());
        upG.setStatus(data.getStatus());
@@ -47,18 +48,22 @@ import java.util.List;
 
         return savingsGoalRepository.save(upG);
     }
+    public void delete(Long id) {
+        savingsGoalRepository.deleteById(id);
+    }
 
 
         
     
-    public List<GoalContributation> getAllContributions() {
+    //servicio de contribuciones
+    public List<GoalContributationModel> getAllContributions() {
         return goalRepositorie.findAll();
     }
 
-    public GoalContributation getByGoalId(Long goalId) {
+    public GoalContributationModel getByGoalId(Long goalId) {
         return goalRepositorie.findById(goalId).orElse(null);
     }
-    public GoalContributation contribute (GoalContributation data){ 
+    public GoalContributationModel contribute (GoalContributationModel data){ 
         if(data==null){ 
             throw new IllegalArgumentException("los datos no pueden ser nill"); 
 
@@ -69,7 +74,7 @@ import java.util.List;
 
         }
         goal.setCurrentAmount(goal.getCurrentAmount().add(data.getAmount()));
-        if(goal.getCurrentAmount().compareTo(goal.getTargetAmiount()) >= 0 ){
+        if(goal.getCurrentAmount().compareTo(goal.getTargetAmount()) >= 0 ){
             goal.setStatus("COMPLETED"); 
         }
         goal.setUpdatedAt(LocalDateTime.now());
@@ -80,6 +85,7 @@ import java.util.List;
         return goalRepositorie.save(data); 
 
     }
+
        
 }
     

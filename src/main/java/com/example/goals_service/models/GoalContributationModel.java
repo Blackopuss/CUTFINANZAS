@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 
 @Table(name = "goal_contributation")
 @Entity
-public class GoalContributation {
+public class GoalContributationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
@@ -35,7 +35,7 @@ public class GoalContributation {
     private  LocalDateTime   createdAt;
 
 
-    public GoalContributation(Long id, Long goalId, Long userId, BigDecimal amount, LocalDate contributationDate, LocalDateTime createdAt) {
+    public GoalContributationModel(Long id, Long goalId, Long userId, BigDecimal amount, LocalDate contributationDate, LocalDateTime createdAt) {
         this.id = id;
         this.goalId = goalId;
         this.userId = userId;
@@ -44,7 +44,7 @@ public class GoalContributation {
         this.createdAt = createdAt;
     }
 
-    public GoalContributation() {
+    public GoalContributationModel() {
     }
 
     public Long getId() {
