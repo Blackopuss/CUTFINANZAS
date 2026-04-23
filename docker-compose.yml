@@ -12,8 +12,15 @@ services:
       MYSQL_PASSWORD: 0206
     ports:
       - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   transactions-service:
     image: transactions-service:latest
@@ -21,7 +28,8 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      - mysql-transactions
+      mysql-transactions:
+        condition: service_healthy    # 👈 espera a que MySQL esté listo de verdad
     networks:
       - app-network
     environment:
@@ -32,3 +40,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mysql_data:
