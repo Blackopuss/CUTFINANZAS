@@ -1,0 +1,12 @@
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\CategoriesApplication.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\controller\CategoriaController.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\dto\CategoriaRequestDTO.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\dto\CategoriaResponseDTO.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\dto\EliminacionResponseDTO.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\exception\GlobalExceptionHandler.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\exception\NombreDuplicadoException.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\exception\ResourceNotFoundException.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\model\Categoria.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\repository\CategoriaRepository.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\service\CategoriaService.java
+C:\Users\axel_\Downloads\categories\src\main\java\com\microservice\categories\service\impl\CategoriaServiceImpl.java

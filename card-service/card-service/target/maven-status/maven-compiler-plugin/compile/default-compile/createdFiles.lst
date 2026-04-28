@@ -1,0 +1,6 @@
+com\example\card_service\repositories\CardRepository.class
+com\example\card_service\controllers\CardController.class
+com\example\card_service\CardServiceApplication.class
+com\example\card_service\models\Card.class
+com\example\card_service\services\CardService.class
+com\example\card_service\config\RestTemplateConfig.class

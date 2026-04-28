@@ -1,0 +1,52 @@
+version: "3.9"          # versión del formato de docker compose
+
+services:               # aquí defines todos los contenedores que van a correr
+
+  # ── CONTENEDOR 1: MySQL ──────────────────────────────
+  mysql-goals:
+    image: mysql:8                        # usa la imagen oficial de MySQL 8
+    container_name: mysql-goals           # nombre del contenedor
+    environment:                          # variables que MySQL necesita para inicializarse
+      MYSQL_ROOT_PASSWORD: root           # contraseña del usuario root
+      MYSQL_DATABASE: goals_db            # crea esta base de datos automáticamente 👈
+      MYSQL_USER: eduardo                 # crea este usuario
+      MYSQL_PASSWORD: 0206                # contraseña del usuario
+    ports:
+      - "3308:3306"     # 3308 en tu máquina → 3306 dentro del contenedor
+                        # usamos 3308 porque 3307 ya lo usa transactions ⚠️
+    volumes:
+      - mysql_goals_data:/var/lib/mysql   # guarda los datos aunque apagues el contenedor
+    networks:
+      - goals-network                     # conectado a esta red virtual
+    healthcheck:                          # verifica que MySQL esté listo de verdad
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s                       # revisa cada 10 segundos
+      timeout: 5s                         # espera máximo 5 segundos
+      retries: 5                          # intenta 5 veces antes de fallar
+
+  # ── CONTENEDOR 2: Tu microservicio ───────────────────
+  goals-service:
+    image: goals-service:latest           # la imagen que creaste con docker build
+    container_name: goals-service
+    ports:
+      - "8084:8084"     # puerto de tu app
+    environment:        # aquí le inyectas las variables al application.properties
+      DB_HOST: mysql-goals      # 👈 nombre del contenedor MySQL de arriba
+      DB_PORT: 3306             # puerto INTERNO de MySQL (no el 3308)
+      DB_NAME: goals_db
+      DB_USER: eduardo
+      DB_PASSWORD: 0206
+    depends_on:
+      mysql-goals:
+        condition: service_healthy    # espera a que MySQL pase el healthcheck
+    networks:
+      - goals-network               # misma red que MySQL para que se vean
+
+# ── RED VIRTUAL ──────────────────────────────────────
+networks:
+  goals-network:
+    driver: bridge      # red tipo bridge, la más común para contenedores locales
+
+# ── VOLÚMENES ────────────────────────────────────────
+volumes:
+  mysql_goals_data:     # aquí Docker guarda los datos de MySQL de forma persistente

@@ -1,0 +1,16 @@
+com\microservice\categories\repository\CategoriaRepository.class
+com\microservice\categories\model\Categoria.class
+com\microservice\categories\controller\CategoriaController.class
+com\microservice\categories\CategoriesApplication.class
+com\microservice\categories\dto\CategoriaRequestDTO.class
+com\microservice\categories\service\impl\CategoriaServiceImpl.class
+com\microservice\categories\exception\NombreDuplicadoException.class
+com\microservice\categories\dto\CategoriaResponseDTO.class
+com\microservice\categories\dto\EliminacionResponseDTO$EliminacionResponseDTOBuilder.class
+com\microservice\categories\exception\GlobalExceptionHandler.class
+com\microservice\categories\exception\ResourceNotFoundException.class
+com\microservice\categories\dto\EliminacionResponseDTO.class
+com\microservice\categories\service\CategoriaService.class
+com\microservice\categories\model\Categoria$CategoriaBuilder.class
+com\microservice\categories\dto\CategoriaResponseDTO$CategoriaResponseDTOBuilder.class
+com\microservice\categories\dto\CategoriaRequestDTO$CategoriaRequestDTOBuilder.class
